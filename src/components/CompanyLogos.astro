@@ -1,0 +1,20 @@
+---
+import { COMPANY_LOGOS } from '@/data/site';
+---
+
+<section class="border-y border-usqay-border py-10 px-4 sm:px-6 bg-white">
+  <div class="max-w-6xl mx-auto text-center">
+    <p class="text-xs text-usqay-subtle font-semibold uppercase tracking-widest mb-6">
+      Diseñado para todo tipo de restaurante
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      {
+        COMPANY_LOGOS.map((name) => (
+          <span class="text-xs font-bold text-usqay-navy tracking-widest uppercase bg-usqay-navy-light border border-usqay-navy/10 rounded-full px-5 py-2 hover:bg-usqay-orange-light hover:border-usqay-orange/20 hover:text-usqay-orange transition-all duration-200 cursor-default">
+            {name}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</section>

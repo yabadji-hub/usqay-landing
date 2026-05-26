@@ -1,0 +1,70 @@
+---
+import { FAQS } from '@/data/site';
+---
+
+<section class="bg-usqay-cream py-20 px-4 sm:px-6">
+  <div class="max-w-2xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="inline-block text-usqay-orange text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full bg-white border border-usqay-orange/20">
+        FAQ
+      </span>
+      <h2
+        class="text-3xl sm:text-4xl font-black text-usqay-navy mt-2"
+        style="font-family: 'Playfair Display', serif;"
+      >
+        Preguntas frecuentes
+      </h2>
+      <p class="text-usqay-muted text-sm mt-3">
+        Todo lo que necesitas saber antes de suscribirte
+      </p>
+    </div>
+
+    <div class="space-y-3" id="faq-list">
+      {
+        FAQS.map((faq, i) => (
+          <div class="faq-item bg-white rounded-2xl border border-usqay-border overflow-hidden shadow-sm" data-index={i}>
+            <button
+              class="faq-trigger w-full flex justify-between items-center text-left gap-4 px-6 py-5 focus:outline-none group"
+              aria-expanded="false"
+            >
+              <span class="text-sm sm:text-base font-semibold text-usqay-navy group-hover:text-usqay-orange transition-colors">
+                {faq.question}
+              </span>
+              <span class="faq-icon w-7 h-7 rounded-full bg-usqay-orange-light flex items-center justify-center text-usqay-orange flex-shrink-0 text-lg font-bold transition-transform duration-300">
+                +
+              </span>
+            </button>
+            <div class="faq-answer hidden px-6 pb-5">
+              <p class="text-sm text-usqay-muted leading-relaxed border-t border-usqay-border pt-4">{faq.answer}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.faq-item').forEach((item) => {
+    const trigger = item.querySelector<HTMLButtonElement>('.faq-trigger')!;
+    const answer  = item.querySelector<HTMLElement>('.faq-answer')!;
+    const icon    = item.querySelector<HTMLElement>('.faq-icon')!;
+
+    trigger.addEventListener('click', () => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll<HTMLElement>('.faq-item').forEach((other) => {
+        if (other !== item) {
+          other.querySelector<HTMLButtonElement>('.faq-trigger')!.setAttribute('aria-expanded', 'false');
+          other.querySelector<HTMLElement>('.faq-answer')!.classList.add('hidden');
+          const otherIcon = other.querySelector<HTMLElement>('.faq-icon')!;
+          otherIcon.textContent = '+';
+          otherIcon.style.transform = 'rotate(0deg)';
+        }
+      });
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+      answer.classList.toggle('hidden', isOpen);
+      icon.textContent = isOpen ? '+' : '×';
+      icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(0deg)';
+    });
+  });
+</script>

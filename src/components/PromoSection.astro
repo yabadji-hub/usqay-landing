@@ -1,0 +1,116 @@
+---
+const PROMO_DEADLINE_HOURS = 5;
+---
+
+<section class="relative overflow-hidden bg-usqay-navy min-h-screen flex flex-col items-center justify-center px-4 py-12" data-deadline-hours={PROMO_DEADLINE_HOURS}>
+
+  <!-- Patrón diagonal izquierdo -->
+  <div class="absolute left-0 top-0 h-full w-40 sm:w-56 pointer-events-none select-none" aria-hidden="true"
+    style="background: repeating-linear-gradient(45deg, #E85C1A 0px, #E85C1A 5px, #1B3D6E 5px, #1B3D6E 22px)">
+  </div>
+
+  <!-- Patrón diagonal derecho -->
+  <div class="absolute right-0 top-0 h-full w-40 sm:w-56 pointer-events-none select-none" aria-hidden="true"
+    style="background: repeating-linear-gradient(-45deg, #E85C1A 0px, #E85C1A 5px, #1B3D6E 5px, #1B3D6E 22px)">
+  </div>
+
+  <!-- Contenido centrado -->
+  <div class="relative z-10 w-full max-w-xl mx-auto text-center flex flex-col items-center gap-6">
+
+    <!-- Logo -->
+    <img
+      src="/usqay-logo.svg"
+      alt="Usqay"
+      class="h-10 w-auto brightness-0 invert"
+    />
+
+    <!-- Badge "Promo" -->
+    <div class="bg-white text-usqay-navy text-3xl font-extrabold px-8 py-3 rounded-lg shadow-xl tracking-tight">
+      Promo
+    </div>
+
+    <!-- Mensaje promo -->
+    <div class="text-white text-lg sm:text-xl leading-relaxed">
+      <p>¿Tu restaurante aún trabaja con papel?</p>
+      <p>Digitaliza tu operación con Usqay,</p>
+      <p>ahorra tiempo y dinero desde el primer mes.</p>
+      <p class="mt-2 font-semibold">Descuento por tiempo limitado</p>
+    </div>
+
+    <!-- Countdown box -->
+    <div class="w-full border border-usqay-orange/50 rounded-xl overflow-hidden">
+      <!-- Barra superior -->
+      <div class="bg-usqay-orange py-2.5 px-4">
+        <p class="text-white text-sm font-semibold tracking-wide">
+          El precio especial termina en:
+        </p>
+      </div>
+
+      <!-- Números -->
+      <div class="bg-usqay-navy/80 grid grid-cols-4 divide-x divide-usqay-orange/30 py-8 px-2">
+        <div class="flex flex-col items-center gap-2">
+          <span id="promo-days" class="text-5xl sm:text-6xl font-extrabold text-white tabular-nums leading-none">00</span>
+          <span class="text-usqay-orange text-xs uppercase tracking-widest font-medium">Días</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <span id="promo-hours" class="text-5xl sm:text-6xl font-extrabold text-white tabular-nums leading-none">00</span>
+          <span class="text-usqay-orange text-xs uppercase tracking-widest font-medium">Horas</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <span id="promo-minutes" class="text-5xl sm:text-6xl font-extrabold text-white tabular-nums leading-none">00</span>
+          <span class="text-usqay-orange text-xs uppercase tracking-widest font-medium">Minutos</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <span id="promo-seconds" class="text-5xl sm:text-6xl font-extrabold text-white tabular-nums leading-none">00</span>
+          <span class="text-usqay-orange text-xs uppercase tracking-widest font-medium">Segundos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <a
+      href="#planes"
+      class="inline-block bg-usqay-orange text-white font-bold text-base px-12 py-4 rounded-xl hover:bg-usqay-orange-dark transition-all duration-200 shadow-lg active:scale-95"
+    >
+      Ver planes con descuento →
+    </a>
+
+  </div>
+</section>
+
+<script>
+  const section = document.querySelector<HTMLElement>('[data-deadline-hours]')!;
+  const deadlineHours = Number(section.dataset.deadlineHours ?? 5);
+
+  const KEY = 'usqay_promo_deadline_v3';
+  let deadline = localStorage.getItem(KEY);
+
+  if (!deadline) {
+    const d = new Date();
+    d.setTime(d.getTime() + deadlineHours * 3600000);
+    deadline = d.toISOString();
+    localStorage.setItem(KEY, deadline);
+  }
+
+  const end = new Date(deadline).getTime();
+
+  const elDays    = document.getElementById('promo-days');
+  const elHours   = document.getElementById('promo-hours');
+  const elMinutes = document.getElementById('promo-minutes');
+  const elSeconds = document.getElementById('promo-seconds');
+
+  function pad(n: number) {
+    return String(Math.max(0, n)).padStart(2, '0');
+  }
+
+  function tick() {
+    const diff = Math.max(0, end - Date.now());
+    if (elDays)    elDays.textContent    = pad(Math.floor(diff / 86400000));
+    if (elHours)   elHours.textContent   = pad(Math.floor((diff % 86400000) / 3600000));
+    if (elMinutes) elMinutes.textContent = pad(Math.floor((diff % 3600000)  / 60000));
+    if (elSeconds) elSeconds.textContent = pad(Math.floor((diff % 60000)    / 1000));
+    if (diff > 0) requestAnimationFrame(tick);
+  }
+
+  tick();
+</script>

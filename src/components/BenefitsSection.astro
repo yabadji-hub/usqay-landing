@@ -1,0 +1,45 @@
+---
+import { BENEFITS } from '@/data/site';
+
+const gradients = [
+  'from-orange-400 to-red-500',
+  'from-blue-500 to-indigo-600',
+  'from-emerald-400 to-teal-500',
+  'from-amber-400 to-orange-500',
+  'from-violet-500 to-purple-600',
+  'from-cyan-400 to-blue-500',
+];
+---
+
+<section class="bg-white py-20 px-4 sm:px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <span class="inline-block text-usqay-orange text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full bg-usqay-orange-light border border-usqay-orange/20">
+        ¿Por qué Usqay?
+      </span>
+      <h2
+        class="text-3xl sm:text-4xl font-black text-usqay-navy mt-2"
+        style="font-family: 'Playfair Display', serif;"
+      >
+        Todo en una sola plataforma
+      </h2>
+      <p class="text-usqay-muted text-base mt-3 max-w-lg mx-auto">
+        Diseñada específicamente para restaurantes y negocios gastronómicos
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        BENEFITS.map((b, i) => (
+          <div class="group bg-white border border-usqay-border rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div class={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center text-2xl mb-5 shadow-md group-hover:scale-110 transition-transform duration-300`}>
+              {b.emoji}
+            </div>
+            <h3 class="text-base font-bold text-usqay-navy mb-2">{b.title}</h3>
+            <p class="text-sm text-usqay-muted leading-relaxed">{b.description}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

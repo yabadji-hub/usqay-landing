@@ -1,0 +1,120 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Navbar from '@/components/Navbar.astro';
+import UniversityBanner from '@/components/UniversityBanner.astro';
+import HeroSection from '@/components/HeroSection.astro';
+import PricingSection from '@/components/PricingSection.astro';
+import StatsSection from '@/components/StatsSection.astro';
+import SuccessCases from '@/components/SuccessCases.astro';
+import BenefitsSection from '@/components/BenefitsSection.astro';
+import CompanyLogos from '@/components/CompanyLogos.astro';
+import FAQSection from '@/components/FAQSection.astro';
+import CTASection from '@/components/CTASection.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import PromoSection from '@/components/PromoSection.astro';
+import ChefSection from '@/components/ChefSection.astro';
+---
+
+<BaseLayout>
+  <!-- Rastreo de visitas + IP para panel admin -->
+  <script>
+    import { insertVisit, isSupabaseConfigured } from '@/lib/supabase';
+
+    // ── Contadores locales síncronos (siempre activos) ────
+    (function () {
+      const TOTAL_KEY = 'usqay_visits_total';
+      const DAY_KEY   = 'usqay_visits_day';
+      const today     = new Date().toISOString().slice(0, 10);
+      localStorage.setItem(TOTAL_KEY, String(Number(localStorage.getItem(TOTAL_KEY) ?? 0) + 1));
+      let dayData: { date: string; count: number } = { date: today, count: 0 };
+      try { dayData = JSON.parse(localStorage.getItem(DAY_KEY) ?? '{}'); } catch {}
+      if (dayData.date !== today) dayData = { date: today, count: 0 };
+      dayData.count += 1;
+      localStorage.setItem(DAY_KEY, JSON.stringify(dayData));
+    })();
+
+    // ── Captura de IP asíncrona ───────────────────────────
+    (async () => {
+      try {
+        const ctrl  = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 6000);
+        const res   = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
+        clearTimeout(timer);
+        if (!res.ok) return;
+        const d  = await res.json();
+        const ua = navigator.userAgent;
+
+        const device =
+          /mobile/i.test(ua)      ? 'Móvil'      :
+          /tablet|ipad/i.test(ua) ? 'Tablet'     : 'Escritorio';
+        const browser =
+          /edg/i.test(ua)     ? 'Edge'    :
+          /chrome/i.test(ua)  ? 'Chrome'  :
+          /firefox/i.test(ua) ? 'Firefox' :
+          /safari/i.test(ua)  ? 'Safari'  : 'Otro';
+
+        const visit = {
+          ip:      String(d.ip           || '—'),
+          country: String(d.country_name || '—'),
+          city:    String(d.city         || '—'),
+          region:  String(d.region       || '—'),
+          isp:     String(d.org          || '—'),
+          device,
+          browser,
+          page:    window.location.pathname,
+        };
+
+        // ── Supabase (si está configurado) ────────────────
+        if (isSupabaseConfigured) {
+          await insertVisit(visit);
+        }
+
+        // ── localStorage (siempre, como fallback/caché) ───
+        const log = JSON.parse(localStorage.getItem('usqay_visit_log') ?? '[]');
+        log.unshift({ ...visit, timestamp: new Date().toISOString() });
+        if (log.length > 500) log.length = 500;
+        localStorage.setItem('usqay_visit_log', JSON.stringify(log));
+
+      } catch { /* ignora errores de red */ }
+    })();
+  </script>
+
+  <!-- Navbar con logo -->
+  <Navbar />
+
+  <!-- Banner superior -->
+  <UniversityBanner />
+
+  <!-- Oferta con cuenta regresiva -->
+  <PromoSection />
+
+  <!-- Chef animado 3D -->
+  <ChefSection />
+
+  <!-- Hero + Toggle de facturación -->
+  <HeroSection />
+
+  <!-- Planes de precios -->
+  <PricingSection />
+
+  <!-- Estadísticas clave -->
+  <StatsSection />
+
+  <!-- Casos de éxito -->
+  <SuccessCases />
+
+  <!-- Beneficios -->
+  <BenefitsSection />
+
+  <!-- Tipos de negocios que usa Usqay -->
+  <CompanyLogos />
+
+  <!-- FAQ -->
+  <FAQSection />
+
+  <!-- CTA final -->
+  <CTASection />
+
+  <!-- Formulario de captación de leads (requerimiento principal) -->
+  <ContactForm />
+</BaseLayout>

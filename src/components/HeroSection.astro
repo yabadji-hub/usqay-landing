@@ -1,0 +1,85 @@
+---
+import { HERO } from '@/data/site';
+---
+
+<section class="relative text-center px-4 sm:px-6 pt-20 pb-14 overflow-hidden bg-white">
+  <!-- Fondo cálido con gradiente radial sutil (naranja = apetito, confianza) -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true"
+    style="background: radial-gradient(ellipse 80% 50% at 50% -10%, #FFF0E8 0%, transparent 70%);">
+  </div>
+
+  <!-- Línea decorativa superior naranja -->
+  <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-usqay-orange to-transparent opacity-60"></div>
+
+  <div class="relative max-w-3xl mx-auto">
+    <!-- Label superior -->
+    <span class="inline-block text-usqay-orange text-xs font-semibold uppercase tracking-widest mb-4 px-3 py-1 rounded-full border border-usqay-orange/30 bg-usqay-orange-light">
+      Sistema todo-en-uno para Piura
+    </span>
+
+    <h1
+      class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6 text-usqay-navy"
+      style="font-family: 'Playfair Display', serif;"
+    >
+      {HERO.heading}
+    </h1>
+    <p class="text-usqay-muted text-lg max-w-xl mx-auto mb-12 leading-relaxed">
+      {HERO.subheading}
+    </p>
+
+    <!-- Toggle facturación -->
+    <div class="inline-flex items-center gap-4 bg-usqay-cream border border-usqay-border rounded-2xl px-6 py-3 shadow-sm">
+      <span id="lbl-mensual" class="text-sm font-semibold text-usqay-text transition-colors duration-200">
+        {HERO.billingToggle.monthly}
+      </span>
+
+      <button
+        id="billing-toggle"
+        role="switch"
+        aria-checked="false"
+        aria-label="Cambiar ciclo de facturación"
+        class="relative w-12 h-6 bg-gray-200 rounded-full cursor-pointer border-0 flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-usqay-orange transition-colors duration-300"
+      >
+        <span
+          id="toggle-thumb"
+          class="absolute top-[3px] left-[3px] w-[18px] h-[18px] bg-white rounded-full shadow transition-transform duration-300 translate-x-0"
+        ></span>
+      </button>
+
+      <span id="lbl-anual" class="text-sm font-medium text-usqay-muted transition-colors duration-200">
+        {HERO.billingToggle.annual}
+      </span>
+
+      <span class="text-xs px-3 py-1 rounded-full bg-usqay-orange text-white font-bold shadow-sm">
+        {HERO.billingToggle.saveBadge}
+      </span>
+    </div>
+  </div>
+</section>
+
+<script>
+  const toggle    = document.getElementById('billing-toggle') as HTMLButtonElement;
+  const thumb     = document.getElementById('toggle-thumb') as HTMLElement;
+  const lblMensual = document.getElementById('lbl-mensual') as HTMLElement;
+  const lblAnual   = document.getElementById('lbl-anual') as HTMLElement;
+
+  let isAnnual = false;
+
+  function updateUI() {
+    toggle.setAttribute('aria-checked', String(isAnnual));
+    toggle.classList.toggle('bg-usqay-orange', isAnnual);
+    toggle.classList.toggle('bg-gray-200', !isAnnual);
+    thumb.classList.toggle('translate-x-[22px]', isAnnual);
+    thumb.classList.toggle('translate-x-0', !isAnnual);
+    lblMensual.classList.toggle('text-usqay-text', !isAnnual);
+    lblMensual.classList.toggle('font-semibold', !isAnnual);
+    lblMensual.classList.toggle('text-usqay-muted', isAnnual);
+    lblAnual.classList.toggle('text-usqay-text', isAnnual);
+    lblAnual.classList.toggle('font-semibold', isAnnual);
+    lblAnual.classList.toggle('text-usqay-muted', !isAnnual);
+    window.dispatchEvent(new CustomEvent('billing-change', { detail: { isAnnual } }));
+  }
+
+  toggle.addEventListener('click', () => { isAnnual = !isAnnual; updateUI(); });
+  updateUI();
+</script>

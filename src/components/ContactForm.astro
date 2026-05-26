@@ -1,0 +1,304 @@
+---
+const FORMSPREE_ID = 'xykolkrw';
+---
+
+<section id="contacto" class="py-20 px-4 sm:px-6 bg-usqay-cream border-t border-usqay-border">
+  <div class="max-w-xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="inline-block text-usqay-orange text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full bg-white border border-usqay-orange/20">
+        Contacto
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-black text-usqay-navy mt-2 mb-3" style="font-family: 'Playfair Display', serif;">
+        Solicita tu demo gratuita
+      </h2>
+      <p class="text-usqay-muted text-sm leading-relaxed max-w-sm mx-auto">
+        Un asesor se comunicará contigo en menos de 24 horas.
+      </p>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-xl border border-usqay-border p-8">
+      <form id="contact-form" action={`https://formspree.io/f/${FORMSPREE_ID}`} method="POST" class="space-y-5" novalidate>
+
+        <!-- Nombre + WhatsApp -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <!-- Nombre -->
+          <div class="field-group">
+            <label for="nombre" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+              Nombre completo <span class="text-usqay-orange">*</span>
+            </label>
+            <input
+              type="text" id="nombre" name="nombre" required
+              placeholder="Ej. Carlos Mendoza"
+              autocomplete="name"
+              class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
+            />
+            <p class="field-error hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
+              <span>⚠</span><span class="error-msg"></span>
+            </p>
+          </div>
+
+          <!-- WhatsApp -->
+          <div class="field-group">
+            <label for="telefono" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+              WhatsApp <span class="text-usqay-orange">*</span>
+            </label>
+            <input
+              type="tel" id="telefono" name="telefono" required
+              placeholder="Ej. 996 123 456"
+              autocomplete="tel"
+              class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
+            />
+            <p class="field-error hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
+              <span>⚠</span><span class="error-msg"></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field-group">
+          <label for="email" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+            Correo electrónico <span class="text-usqay-orange">*</span>
+          </label>
+          <input
+            type="email" id="email" name="email" required
+            placeholder="tu@correo.com"
+            autocomplete="email"
+            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
+          />
+          <p class="field-error hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
+            <span>⚠</span><span class="error-msg"></span>
+          </p>
+        </div>
+
+        <!-- Tipo de negocio -->
+        <div class="field-group">
+          <label for="negocio" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+            Tipo de negocio <span class="text-usqay-orange">*</span>
+          </label>
+          <select
+            id="negocio" name="tipo_negocio" required
+            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text focus:outline-none transition-all appearance-none"
+          >
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option value="restaurante">Restaurante</option>
+            <option value="polleria">Pollería</option>
+            <option value="cevicheria">Cevichería</option>
+            <option value="chifa">Chifa</option>
+            <option value="fuente-de-soda">Fuente de soda</option>
+            <option value="otro">Otro</option>
+          </select>
+          <p class="field-error hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
+            <span>⚠</span><span class="error-msg"></span>
+          </p>
+        </div>
+
+        <!-- Mensaje -->
+        <div class="field-group">
+          <label for="mensaje" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+            ¿Qué necesitas gestionar?
+          </label>
+          <textarea
+            id="mensaje" name="mensaje" rows="3"
+            placeholder="Pedidos, inventario, facturación..."
+            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Botón -->
+        <button type="submit" id="submit-btn"
+          class="w-full bg-gradient-to-r from-usqay-orange to-usqay-orange-dark text-white font-black py-4 rounded-2xl hover:opacity-90 transition-all duration-200 text-base shadow-lg active:scale-95">
+          Solicitar demo gratuita →
+        </button>
+
+        <p class="text-usqay-subtle text-xs text-center">
+          Sin compromisos · Información confidencial · Respuesta en &lt;24h
+        </p>
+      </form>
+
+      <!-- Éxito -->
+      <div id="success-msg" class="hidden text-center py-10">
+        <div class="text-6xl mb-4">✅</div>
+        <h3 class="text-xl font-black text-usqay-navy mb-2" style="font-family: 'Playfair Display', serif;">¡Solicitud recibida!</h3>
+        <p class="text-usqay-muted text-sm">Un asesor te contactará en menos de 24 horas por WhatsApp o correo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Estado válido */
+  .form-input.is-valid {
+    border-color: #16a34a !important;
+    background-color: #f0fdf4 !important;
+  }
+  /* Estado inválido */
+  .form-input.is-invalid {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+  }
+  /* Shake al error de envío */
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60% { transform: translateX(-6px); }
+    40%,80% { transform: translateX(6px); }
+  }
+  .shake { animation: shake 0.4s ease; }
+</style>
+
+<script>
+  import { insertSubmission, isSupabaseConfigured } from '@/lib/supabase';
+
+  // ── Reglas de validación ──────────────────────────────────────
+  const RULES: Record<string, { validate: (v: string) => boolean; message: string }[]> = {
+    nombre: [
+      { validate: (v) => v.trim().length >= 3,          message: 'Ingresa tu nombre completo (mínimo 3 caracteres).' },
+      { validate: (v) => !/\d/.test(v),                 message: 'El nombre no puede contener números.' },
+    ],
+    telefono: [
+      { validate: (v) => v.replace(/\D/g,'').length >= 6, message: 'Ingresa un número de teléfono válido.' },
+      { validate: (v) => /^[\d\s\+\-\(\)]+$/.test(v),    message: 'Solo se permiten números, espacios y + ( ).' },
+    ],
+    email: [
+      { validate: (v) => v.trim().length > 0,            message: 'El correo es obligatorio.' },
+      { validate: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), message: 'Ingresa un correo electrónico válido.' },
+    ],
+    tipo_negocio: [
+      { validate: (v) => v.trim().length > 0,            message: 'Selecciona el tipo de negocio.' },
+    ],
+  };
+
+  // ── Helpers ───────────────────────────────────────────────────
+  function getError(name: string, value: string): string | null {
+    const rules = RULES[name];
+    if (!rules) return null;
+    for (const rule of rules) {
+      if (!rule.validate(value)) return rule.message;
+    }
+    return null;
+  }
+
+  function setValid(input: HTMLElement, errorEl: HTMLElement) {
+    input.classList.remove('is-invalid');
+    input.classList.add('is-valid');
+    errorEl.classList.add('hidden');
+  }
+
+  function setInvalid(input: HTMLElement, errorEl: HTMLElement, msg: string) {
+    input.classList.remove('is-valid');
+    input.classList.add('is-invalid');
+    errorEl.querySelector<HTMLElement>('.error-msg')!.textContent = msg;
+    errorEl.classList.remove('hidden');
+  }
+
+  function clearState(input: HTMLElement, errorEl: HTMLElement) {
+    input.classList.remove('is-valid', 'is-invalid');
+    errorEl.classList.add('hidden');
+  }
+
+  function validateField(input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): boolean {
+    const group = input.closest('.field-group')!;
+    const errorEl = group.querySelector<HTMLElement>('.field-error')!;
+    const name  = input.name;
+    const value = input.value;
+
+    // Campo opcional sin reglas → siempre válido
+    if (!RULES[name]) { clearState(input, errorEl); return true; }
+
+    const msg = getError(name, value);
+    if (msg) { setInvalid(input, errorEl, msg); return false; }
+    setValid(input, errorEl);
+    return true;
+  }
+
+  // ── Adjuntar listeners blur + input ──────────────────────────
+  const form       = document.getElementById('contact-form') as HTMLFormElement;
+  const successMsg = document.getElementById('success-msg') as HTMLElement;
+  const submitBtn  = document.getElementById('submit-btn') as HTMLButtonElement;
+
+  const allInputs = form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+    'input, select, textarea'
+  );
+
+  allInputs.forEach((input) => {
+    // Validar al perder el foco (solo si el usuario tocó el campo)
+    input.addEventListener('blur', () => {
+      if (input.value.trim() !== '' || input.name in RULES) validateField(input);
+    });
+
+    // Limpiar error mientras escribe (re-validar en tiempo real)
+    input.addEventListener('input', () => {
+      const group   = input.closest('.field-group')!;
+      const errorEl = group.querySelector<HTMLElement>('.field-error')!;
+      if (input.classList.contains('is-invalid')) validateField(input);
+      else clearState(input, errorEl);
+    });
+  });
+
+  // ── Submit ────────────────────────────────────────────────────
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Validar todos los campos requeridos
+    let allOk = true;
+    allInputs.forEach((input) => {
+      if (RULES[input.name] !== undefined) {
+        const ok = validateField(input);
+        if (!ok) allOk = false;
+      }
+    });
+
+    if (!allOk) {
+      // Shake en el botón y scroll al primer error
+      submitBtn.classList.add('shake');
+      submitBtn.addEventListener('animationend', () => submitBtn.classList.remove('shake'), { once: true });
+      const firstInvalid = form.querySelector<HTMLElement>('.is-invalid');
+      firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstInvalid?.focus();
+      return;
+    }
+
+    // Enviar
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+      if (res.ok) {
+        const data = new FormData(form);
+        const submission = {
+          nombre:       String(data.get('nombre')      ?? ''),
+          telefono:     String(data.get('telefono')     ?? ''),
+          email:        String(data.get('email')        ?? ''),
+          tipo_negocio: String(data.get('tipo_negocio') ?? ''),
+          mensaje:      String(data.get('mensaje')      ?? ''),
+          estado:       'Nuevo',
+        };
+
+        // ── Supabase (si está configurado) ──────────────────
+        if (isSupabaseConfigured) {
+          await insertSubmission(submission);
+        }
+
+        // ── localStorage (fallback/caché siempre activo) ────
+        const subs = JSON.parse(localStorage.getItem('usqay_submissions') ?? '[]');
+        subs.push({ ...submission, fecha: new Date().toISOString() });
+        localStorage.setItem('usqay_submissions', JSON.stringify(subs));
+
+        form.classList.add('hidden');
+        successMsg.classList.remove('hidden');
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Solicitar demo gratuita →';
+        alert('Error al enviar. Por favor intenta de nuevo.');
+      }
+    } catch {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Solicitar demo gratuita →';
+      alert('Error de conexión. Por favor intenta de nuevo.');
+    }
+  });
+</script>

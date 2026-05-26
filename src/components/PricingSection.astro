@@ -1,0 +1,165 @@
+---
+import type { Plan } from '@/data/site';
+import { PLANS } from '@/data/site';
+---
+
+<section id="planes" class="bg-usqay-cream px-4 sm:px-6 py-20">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {
+        PLANS.map((plan: Plan, i: number) => (
+          <div
+            class={[
+              'pricing-card relative rounded-2xl flex flex-col overflow-hidden',
+              'transition-all duration-300 ease-out',
+              plan.featured
+                ? 'shadow-2xl shadow-orange-200 scale-[1.03] hover:scale-[1.05]'
+                : 'bg-white border border-usqay-border shadow-sm hover:shadow-xl hover:-translate-y-1',
+            ].join(' ')}
+            style={`--delay: ${i * 100}ms`}
+          >
+            {/* Header de la tarjeta — naranja degradado en featured */}
+            <div class={[
+              'px-6 pt-8 pb-6',
+              plan.featured
+                ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white'
+                : 'bg-white',
+            ].join(' ')}>
+
+              {/* Badge popular */}
+              {plan.featured && plan.featuredLabel && (
+                <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-usqay-orange text-xs font-black px-4 py-1 rounded-full whitespace-nowrap shadow-lg border border-orange-100">
+                  {plan.featuredLabel}
+                </div>
+              )}
+
+              {/* Ícono */}
+              <div class={[
+                'w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4',
+                plan.featured ? 'bg-white/20' : 'bg-usqay-orange-light',
+              ].join(' ')}>
+                {plan.emoji}
+              </div>
+
+              <h3 class={[
+                'text-xl font-black mb-1',
+                plan.featured ? 'text-white' : 'text-usqay-navy',
+              ].join(' ')} style="font-family: 'Playfair Display', serif;">
+                {plan.name}
+              </h3>
+              <p class={[
+                'text-xs leading-relaxed mb-5',
+                plan.featured ? 'text-orange-100' : 'text-usqay-muted',
+              ].join(' ')}>
+                {plan.description}
+              </p>
+
+              {/* Precio */}
+              <div class="mb-1">
+                <div class="flex items-baseline gap-0.5">
+                  <span class={[
+                    'plan-original text-sm line-through mr-1',
+                    plan.featured ? 'text-orange-200' : 'text-usqay-subtle',
+                  ].join(' ')}
+                    data-monthly={plan.priceMonthly}
+                    data-annual={plan.priceAnnual}
+                    style="display:none"
+                  >
+                    S/{plan.priceMonthly}
+                  </span>
+                  <span class={['text-base font-semibold', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')}>S/</span>
+                  <span
+                    class={['plan-price text-5xl font-black leading-none', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')}
+                    data-monthly={plan.priceMonthly}
+                    data-annual={plan.priceAnnual}
+                  >
+                    {plan.priceMonthly}
+                  </span>
+                  <span class={['text-sm ml-1', plan.featured ? 'text-orange-100' : 'text-usqay-muted'].join(' ')}>/mes</span>
+                </div>
+                {plan.annualSavingsLabel && (
+                  <p class={['plan-savings text-xs mt-1 font-medium', plan.featured ? 'text-orange-100' : 'text-usqay-green'].join(' ')} style="display:none">
+                    {plan.annualSavingsLabel}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div class={['px-6 py-4', plan.featured ? 'bg-usqay-orange-dark' : 'bg-white'].join(' ')}>
+              <a
+                href={plan.ctaHref}
+                class={[
+                  'block w-full text-center py-3 rounded-xl text-sm font-bold',
+                  'transition-all duration-200 active:scale-95',
+                  plan.featured
+                    ? 'bg-white text-usqay-orange hover:bg-orange-50 shadow-md'
+                    : 'bg-usqay-orange text-white hover:bg-usqay-orange-dark shadow-sm hover:shadow-orange-200 hover:shadow-md',
+                ].join(' ')}
+              >
+                {plan.ctaLabel}
+              </a>
+            </div>
+
+            {/* Features */}
+            <div class="bg-white flex-1 px-6 pt-5 pb-6">
+              <p class="text-[10px] uppercase tracking-widest text-usqay-subtle font-bold mb-4">
+                Incluye
+              </p>
+              <ul class="space-y-2.5">
+                {plan.features.map((f) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-snug">
+                    <span class={[
+                      'flex-shrink-0 mt-0.5 text-base leading-none',
+                      f.included ? 'text-usqay-green' : 'text-usqay-subtle',
+                    ].join(' ')}>
+                      {f.included ? '✓' : '✗'}
+                    </span>
+                    <span class={f.included ? 'text-usqay-text font-medium' : 'text-usqay-subtle line-through'}>
+                      {f.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing-card {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  .pricing-card.is-visible {
+    animation: card-in 0.55s cubic-bezier(.22,.68,0,1.2) var(--delay, 0ms) both;
+  }
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-visible'); observer.unobserve(e.target); } }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll<HTMLElement>('.pricing-card').forEach((c) => observer.observe(c));
+
+  window.addEventListener('billing-change', (e: Event) => {
+    const { isAnnual } = (e as CustomEvent).detail as { isAnnual: boolean };
+    document.querySelectorAll<HTMLElement>('.plan-price').forEach((el) => {
+      el.textContent = isAnnual ? (el.dataset.annual ?? '') : (el.dataset.monthly ?? '');
+    });
+    document.querySelectorAll<HTMLElement>('.plan-original').forEach((el) => {
+      el.style.display = isAnnual ? 'inline' : 'none';
+    });
+    document.querySelectorAll<HTMLElement>('.plan-savings').forEach((el) => {
+      el.style.display = isAnnual ? 'block' : 'none';
+    });
+  });
+</script>

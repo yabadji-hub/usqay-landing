@@ -1,0 +1,20 @@
+---
+import { BANNER } from '@/data/site';
+---
+
+{
+  BANNER.enabled && (
+    <div class="bg-usqay-orange-light border-b border-usqay-orange/20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-center gap-3 flex-wrap">
+        <span class="text-usqay-orange text-lg">🍽️</span>
+        <p class="text-sm text-usqay-text leading-relaxed text-center">
+          <strong class="text-usqay-orange font-bold">{BANNER.text}</strong>{' '}
+          <a href={BANNER.link.href} class="underline underline-offset-2 text-usqay-navy font-semibold hover:text-usqay-orange transition-colors">
+            {BANNER.link.label}
+          </a>{' '}
+          <span class="text-usqay-muted">{BANNER.suffix}</span>
+        </p>
+      </div>
+    </div>
+  )
+}

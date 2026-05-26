@@ -1,0 +1,27 @@
+---
+import { STATS } from '@/data/site';
+---
+
+<section class="bg-usqay-navy py-20 px-4 sm:px-6">
+  <div class="max-w-6xl mx-auto">
+    <h2
+      class="text-3xl sm:text-4xl lg:text-5xl font-black text-white text-center mb-16 leading-tight max-w-2xl mx-auto"
+      style="font-family: 'Playfair Display', serif;"
+    >
+      Cientos de negocios en Piura ya confían en Usqay
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8">
+      {
+        STATS.map((stat) => (
+          <div class="text-center sm:text-left border-l-4 border-usqay-orange pl-6">
+            <p class="text-6xl sm:text-7xl lg:text-8xl font-black text-usqay-orange leading-none mb-4"
+              style="font-family: 'Playfair Display', serif;">
+              {stat.value}
+            </p>
+            <p class="text-sm sm:text-base text-blue-200 leading-relaxed" set:html={stat.description} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
