@@ -1462,21 +1462,25 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
       ]);
 
       // Update metrics from DB
-      setText('visits-total',    String(allVisits.length));
-      setText('visits-today',    String(todayVisits.length));
+      const uniqueIPsToday = new Set(todayVisits.map(v => v.ip).filter(Boolean)).size;
+      const uniqueIPsTotal = new Set(allVisits.map(v => v.ip).filter(Boolean)).size;
+      setText('visits-total',     String(uniqueIPsTotal));
+      setText('visits-today',     String(uniqueIPsToday));
+      // Páginas vistas = total registros en DB (centralizado, todos los dispositivos)
+      setText('pageviews-total',  String(allVisits.length));
+      setText('pageviews-today',  String(todayVisits.length));
       setText('forms-count',     String(allLeads.length));
-      const convRate = allVisits.length > 0
-        ? ((allLeads.length / allVisits.length) * 100).toFixed(1)
+      const convRate = uniqueIPsTotal > 0
+        ? ((allLeads.length / uniqueIPsTotal) * 100).toFixed(1)
         : '0.0';
       setText('conversion-rate', convRate + '%');
       setText('forms-badge',     allLeads.length > 0 ? `+${allLeads.length}` : 'Leads');
 
       // DB stats
-      const uniqueIPs = new Set(allVisits.map(v => v.ip)).size;
       setText('db-visits-total', String(allVisits.length));
       setText('db-visits-today', String(todayVisits.length));
       setText('db-leads-total',  String(allLeads.length));
-      setText('db-unique-ips',   String(uniqueIPs));
+      setText('db-unique-ips',   String(uniqueIPsTotal));
 
       // Update submission table with DB data (map created_at → fecha)
       const mapped = allLeads.map(s => ({
