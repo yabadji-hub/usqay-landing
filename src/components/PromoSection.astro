@@ -82,17 +82,18 @@ const PROMO_DEADLINE_HOURS = 5;
   const section = document.querySelector<HTMLElement>('[data-deadline-hours]')!;
   const deadlineHours = Number(section.dataset.deadlineHours ?? 5);
 
-  const KEY = 'usqay_promo_deadline_v3';
-  let deadline = localStorage.getItem(KEY);
+  const RESTART_HOURS = 4; // horas al reiniciarse automáticamente
+  const KEY = 'usqay_promo_deadline_v4';
 
-  if (!deadline) {
+  function createDeadline(): string {
     const d = new Date();
     d.setTime(d.getTime() + deadlineHours * 3600000);
-    deadline = d.toISOString();
-    localStorage.setItem(KEY, deadline);
+    return d.toISOString();
   }
 
-  const end = new Date(deadline).getTime();
+  let deadline = localStorage.getItem(KEY) ?? createDeadline();
+  localStorage.setItem(KEY, deadline);
+  let endTime = new Date(deadline).getTime();
 
   const elDays    = document.getElementById('promo-days');
   const elHours   = document.getElementById('promo-hours');
@@ -104,12 +105,23 @@ const PROMO_DEADLINE_HOURS = 5;
   }
 
   function tick() {
-    const diff = Math.max(0, end - Date.now());
+    const now  = Date.now();
+    let   diff = endTime - now;
+
+    // Al llegar a 0 → reinicia a 4 horas automáticamente
+    if (diff <= 0) {
+      const newDeadline = new Date(now + RESTART_HOURS * 3600000).toISOString();
+      localStorage.setItem(KEY, newDeadline);
+      endTime = new Date(newDeadline).getTime();
+      diff    = RESTART_HOURS * 3600000;
+    }
+
     if (elDays)    elDays.textContent    = pad(Math.floor(diff / 86400000));
     if (elHours)   elHours.textContent   = pad(Math.floor((diff % 86400000) / 3600000));
     if (elMinutes) elMinutes.textContent = pad(Math.floor((diff % 3600000)  / 60000));
     if (elSeconds) elSeconds.textContent = pad(Math.floor((diff % 60000)    / 1000));
-    if (diff > 0) requestAnimationFrame(tick);
+
+    requestAnimationFrame(tick);
   }
 
   tick();

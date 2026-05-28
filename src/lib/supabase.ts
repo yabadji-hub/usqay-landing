@@ -85,6 +85,19 @@ export async function updateSubmissionStatus(id: string, estado: string): Promis
   await supabase.from('submissions').update({ estado }).eq('id', id);
 }
 
+// ── Clear helpers ──────────────────────────────────────────────
+export async function clearVisits(): Promise<{ error: string | null }> {
+  if (!supabase) return { error: 'Supabase no configurado' };
+  const { error } = await supabase.from('visits').delete().gte('created_at', '2000-01-01T00:00:00Z');
+  return { error: error?.message ?? null };
+}
+
+export async function clearSubmissions(): Promise<{ error: string | null }> {
+  if (!supabase) return { error: 'Supabase no configurado' };
+  const { error } = await supabase.from('submissions').delete().gte('created_at', '2000-01-01T00:00:00Z');
+  return { error: error?.message ?? null };
+}
+
 // ── Stats helpers ──────────────────────────────────────────────
 export async function fetchDailyStats() {
   if (!supabase) return [];

@@ -64,16 +64,24 @@ import ChefSection from '@/components/ChefSection.astro';
           page:    window.location.pathname,
         };
 
+        // ── Deduplicación: misma IP ya registrada hoy → ignorar ──
+        const existingLog: { ip: string; timestamp: string }[] =
+          JSON.parse(localStorage.getItem('usqay_visit_log') ?? '[]');
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const alreadyToday = existingLog.some(
+          v => v.ip === visit.ip && v.timestamp?.slice(0, 10) === todayStr
+        );
+        if (alreadyToday) return; // misma IP visitó hoy → no contar de nuevo
+
         // ── Supabase (si está configurado) ────────────────
         if (isSupabaseConfigured) {
           await insertVisit(visit);
         }
 
         // ── localStorage (siempre, como fallback/caché) ───
-        const log = JSON.parse(localStorage.getItem('usqay_visit_log') ?? '[]');
-        log.unshift({ ...visit, timestamp: new Date().toISOString() });
-        if (log.length > 500) log.length = 500;
-        localStorage.setItem('usqay_visit_log', JSON.stringify(log));
+        existingLog.unshift({ ...visit, timestamp: new Date().toISOString() });
+        if (existingLog.length > 500) existingLog.length = 500;
+        localStorage.setItem('usqay_visit_log', JSON.stringify(existingLog));
 
       } catch { /* ignora errores de red */ }
     })();

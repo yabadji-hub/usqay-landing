@@ -65,6 +65,14 @@ CREATE POLICY "public_update_submissions_estado"
   USING (true)
   WITH CHECK (true);
 
+-- Política: eliminar visitas (solo desde panel admin)
+CREATE POLICY "public_delete_visits"
+  ON visits FOR DELETE TO anon USING (true);
+
+-- Política: eliminar leads (solo desde panel admin)
+CREATE POLICY "public_delete_submissions"
+  ON submissions FOR DELETE TO anon USING (true);
+
 -- ── Vista: estadísticas diarias ───────────────────────────────
 CREATE OR REPLACE VIEW daily_stats AS
 SELECT

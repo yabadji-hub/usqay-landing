@@ -103,9 +103,10 @@ const plansJSON = JSON.stringify(PLANS);
             <span class="text-xs text-blue-400 font-medium group-hover:text-blue-600 transition-colors">Hoy · ver IPs →</span>
           </div>
           <p class="text-3xl font-bold text-gray-900" id="visits-today">0</p>
-          <p class="text-sm text-gray-500 mt-1">Visitas hoy</p>
+          <p class="text-sm text-gray-500 mt-0.5">Visitantes únicos hoy</p>
+          <p class="text-xs text-gray-400 mt-1">La página fue vista <span id="pageviews-today">0</span> veces</p>
         </div>
-        <div id="card-visits-total" class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm cursor-pointer hover:shadow-md hover:border-purple-200 transition-all group" title="Clic para ver IPs">
+        <div id="card-visits-total" class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm cursor-pointer hover:shadow-md hover:border-purple-200 transition-all group" title="Clic para ver todas las IPs">
           <div class="flex items-start justify-between mb-3">
             <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
               <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +116,8 @@ const plansJSON = JSON.stringify(PLANS);
             <span class="text-xs text-purple-400 font-medium group-hover:text-purple-600 transition-colors">Total · ver IPs →</span>
           </div>
           <p class="text-3xl font-bold text-gray-900" id="visits-total">0</p>
-          <p class="text-sm text-gray-500 mt-1">Visitas totales</p>
+          <p class="text-sm text-gray-500 mt-0.5">Visitantes únicos</p>
+          <p class="text-xs text-gray-400 mt-1">La página fue vista <span id="pageviews-total">0</span> veces</p>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
           <div class="flex items-start justify-between mb-3">
@@ -230,19 +232,71 @@ const plansJSON = JSON.stringify(PLANS);
           </div>
         </div>
 
-        <!-- Global discount bar -->
-        <div class="px-6 py-4 bg-[#FFF7F3] border-b border-orange-100 flex flex-wrap items-center gap-4">
-          <div class="flex items-center gap-2">
-            <span class="text-sm font-semibold text-[#E85C1A]">🏷️ Descuento anual global:</span>
-            <input id="global-discount" type="number" min="0" max="100" value="13" placeholder="13"
-              class="w-20 border border-orange-200 rounded-lg px-3 py-1.5 text-sm text-center font-bold focus:outline-none focus:ring-2 focus:ring-[#E85C1A]" />
-            <span class="text-sm text-gray-600 font-semibold">%</span>
+        <!-- Discount bars -->
+        <div class="border-b border-orange-100 divide-y divide-orange-50">
+
+          <!-- Row 1: Descuento anual -->
+          <div class="px-6 py-3 bg-[#FFF7F3] flex flex-wrap items-center gap-3">
+            <span class="text-xs font-bold text-[#E85C1A] w-32 flex-shrink-0">🏷️ Desc. anual:</span>
+            <div class="flex items-center gap-1.5">
+              <input id="global-discount" type="number" min="0" max="100" value="13" placeholder="13"
+                class="w-16 border border-orange-200 rounded-lg px-2 py-1.5 text-sm text-center font-bold focus:outline-none focus:ring-2 focus:ring-[#E85C1A]" />
+              <span class="text-sm text-gray-600 font-semibold">%</span>
+            </div>
+            <div class="relative" id="discount-plan-selector">
+              <button id="plan-selector-btn" type="button"
+                class="flex items-center gap-1.5 text-xs font-semibold text-gray-700 bg-white border border-gray-300 px-3 py-1.5 rounded-lg hover:border-[#E85C1A] hover:text-[#E85C1A] transition-all">
+                <span id="plan-selector-label">Todos los planes</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div id="plan-selector-dropdown"
+                class="hidden absolute top-full left-0 mt-1.5 bg-white border border-gray-200 rounded-2xl shadow-xl p-2 z-30 min-w-[200px]">
+                <label class="flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer hover:bg-orange-50 transition-colors">
+                  <input type="checkbox" id="select-all-plans" checked class="w-4 h-4 rounded" style="accent-color:#E85C1A;" />
+                  <span class="text-xs font-bold text-gray-800">Todos los planes</span>
+                </label>
+                <div class="border-t border-gray-100 my-1 mx-2"></div>
+                <div id="plan-checkboxes-list" class="space-y-0.5"></div>
+              </div>
+            </div>
+            <button id="apply-discount-btn"
+              class="text-xs font-bold text-white bg-[#E85C1A] px-3 py-1.5 rounded-lg hover:bg-[#C44B15] transition-all active:scale-95">
+              Aplicar →
+            </button>
+            <span class="text-xs text-gray-400">Modifica el <strong>precio anual</strong> /mes · fórmula: mensual × (1 − %/100)</span>
           </div>
-          <button id="apply-discount-btn"
-            class="text-xs font-bold text-white bg-[#E85C1A] px-4 py-2 rounded-lg hover:bg-[#C44B15] transition-all active:scale-95">
-            Aplicar a todos los planes
-          </button>
-          <span class="text-xs text-gray-500">Calcula el precio anual automáticamente: precio mensual × (1 − %/100)</span>
+
+          <!-- Row 2: Descuento mensual -->
+          <div class="px-6 py-3 bg-blue-50/40 flex flex-wrap items-center gap-3">
+            <span class="text-xs font-bold text-blue-600 w-32 flex-shrink-0">💰 Desc. mensual:</span>
+            <div class="flex items-center gap-1.5">
+              <input id="monthly-discount" type="number" min="0" max="100" value="0" placeholder="0"
+                class="w-16 border border-blue-200 rounded-lg px-2 py-1.5 text-sm text-center font-bold focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              <span class="text-sm text-gray-600 font-semibold">%</span>
+            </div>
+            <div class="relative" id="monthly-plan-selector">
+              <button id="monthly-plan-selector-btn" type="button"
+                class="flex items-center gap-1.5 text-xs font-semibold text-gray-700 bg-white border border-gray-300 px-3 py-1.5 rounded-lg hover:border-blue-400 hover:text-blue-600 transition-all">
+                <span id="monthly-plan-selector-label">Todos los planes</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div id="monthly-plan-selector-dropdown"
+                class="hidden absolute top-full left-0 mt-1.5 bg-white border border-gray-200 rounded-2xl shadow-xl p-2 z-30 min-w-[200px]">
+                <label class="flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer hover:bg-blue-50 transition-colors">
+                  <input type="checkbox" id="select-all-monthly-plans" checked class="w-4 h-4 rounded" style="accent-color:#2563eb;" />
+                  <span class="text-xs font-bold text-gray-800">Todos los planes</span>
+                </label>
+                <div class="border-t border-gray-100 my-1 mx-2"></div>
+                <div id="monthly-plan-checkboxes-list" class="space-y-0.5"></div>
+              </div>
+            </div>
+            <button id="apply-monthly-discount-btn"
+              class="text-xs font-bold text-white bg-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-all active:scale-95">
+              Aplicar →
+            </button>
+            <span class="text-xs text-gray-400">Modifica el <strong>precio mensual</strong> · fórmula: precio base × (1 − %/100)</span>
+          </div>
+
         </div>
 
         <!-- Plans grid -->
@@ -313,6 +367,31 @@ const plansJSON = JSON.stringify(PLANS);
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               Exportar leads DB → CSV
             </button>
+          </div>
+
+          <!-- Danger zone: limpiar DB -->
+          <div class="mt-6 pt-5 border-t border-red-100">
+            <p class="text-xs font-bold text-red-500 mb-3 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              Zona de peligro — acción irreversible
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button id="clear-visits-db-btn"
+                class="flex items-center gap-1.5 text-xs font-semibold text-red-600 border border-red-300 bg-red-50 px-3 py-2 rounded-lg hover:bg-red-100 transition-all">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Limpiar visitas (DB)
+              </button>
+              <button id="clear-leads-db-btn"
+                class="flex items-center gap-1.5 text-xs font-semibold text-red-600 border border-red-300 bg-red-50 px-3 py-2 rounded-lg hover:bg-red-100 transition-all">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Limpiar leads (DB)
+              </button>
+              <button id="clear-all-db-btn"
+                class="flex items-center gap-1.5 text-xs font-bold text-white bg-red-600 px-3 py-2 rounded-lg hover:bg-red-700 transition-all">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 110 18A9 9 0 0112 3z"/></svg>
+                Limpiar TODO (DB + local)
+              </button>
+            </div>
           </div>
         </div>
 
@@ -532,6 +611,37 @@ const plansJSON = JSON.stringify(PLANS);
     </div>
   </div>
 
+  <!-- ── CLEAR DB PASSWORD MODAL ───────────────────────── -->
+  <div id="clear-db-modal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 mb-4">
+          <svg class="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <h2 class="text-xl font-black text-gray-900">Confirmar limpieza</h2>
+        <p id="clear-db-modal-desc" class="text-sm text-gray-500 mt-1 leading-relaxed">Esta acción eliminará los datos de forma permanente.</p>
+      </div>
+      <div class="mb-5">
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Ingresa la contraseña de administrador</label>
+        <input type="password" id="clear-db-password" placeholder="••••••••" autocomplete="off"
+          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent transition-all" />
+        <p id="clear-db-error" class="hidden mt-2 text-xs text-red-500 font-medium">Contraseña incorrecta. Inténtalo de nuevo.</p>
+      </div>
+      <div class="flex gap-3">
+        <button id="clear-db-cancel-btn"
+          class="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-all">
+          Cancelar
+        </button>
+        <button id="clear-db-confirm-btn"
+          class="flex-1 py-3 rounded-xl bg-red-600 text-white text-sm font-bold hover:bg-red-700 transition-all active:scale-95">
+          Confirmar y limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast notification -->
   <div id="save-toast" class="hidden fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-green-600 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -581,7 +691,12 @@ const plansJSON = JSON.stringify(PLANS);
     isSupabaseConfigured,
     fetchVisits, fetchVisitsToday,
     fetchSubmissions, updateSubmissionStatus,
+    clearVisits, clearSubmissions,
   } from '@/lib/supabase';
+
+  // ── Types ─────────────────────────────────────────────────
+  interface Feature  { label: string; included: boolean; }
+  interface PlanData { id:string; name:string; emoji:string; featured:boolean; featuredLabel:string; description:string; priceMonthly:number; priceAnnual:number; annualSavingsLabel:string; ctaLabel:string; ctaVariant:string; ctaHref:string; features:Feature[]; }
 
   // ── Constants ─────────────────────────────────────────────
   const ADMIN_PASSWORD  = 'usqay2026';
@@ -590,6 +705,10 @@ const plansJSON = JSON.stringify(PLANS);
   const VISITS_DAY_KEY  = 'usqay_visits_day';
   const SUBS_KEY        = 'usqay_submissions';
   const PLANS_OVERRIDE  = 'usqay_plan_overrides';
+  const DB_STATUS_KEY   = 'usqay_db_status';
+
+  // ── Mutable state (debe estar antes de showDashboard) ─────
+  let editingPlans: PlanData[] = [];
 
   // ── Elements ──────────────────────────────────────────────
   const loginOverlay = document.getElementById('login-overlay')!;
@@ -611,6 +730,35 @@ const plansJSON = JSON.stringify(PLANS);
     initBackendSection();
     const el = document.getElementById('current-date');
     if (el) el.textContent = new Date().toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  }
+
+  // ── Actualizar estado del backend inmediatamente (síncrono) ──
+  // Esto evita que "verificando..." quede pegado si hay un error más adelante.
+  {
+    const statusEl = document.getElementById('backend-status-text');
+    const badgeEl  = document.getElementById('db-status-badge');
+    if (statusEl) {
+      if (!isSupabaseConfigured) {
+        statusEl.textContent = 'Sin configurar — usando localStorage';
+        statusEl.className   = 'font-semibold text-amber-600';
+        if (badgeEl) {
+          badgeEl.textContent = '⚠ Sin DB';
+          badgeEl.className   = 'ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700';
+          badgeEl.classList.remove('hidden');
+        }
+      } else if (sessionStorage.getItem(DB_STATUS_KEY) === 'connected') {
+        statusEl.textContent = 'Conectado · PostgreSQL';
+        statusEl.className   = 'font-semibold text-emerald-600';
+        if (badgeEl) {
+          badgeEl.textContent = '✓ DB activa';
+          badgeEl.className   = 'ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
+          badgeEl.classList.remove('hidden');
+        }
+      } else {
+        statusEl.textContent = 'conectando...';
+        statusEl.className   = 'font-semibold text-gray-500';
+      }
+    }
   }
 
   if (sessionStorage.getItem(SESSION_KEY) === '1') showDashboard();
@@ -637,12 +785,27 @@ const plansJSON = JSON.stringify(PLANS);
 
   // ── Metrics ───────────────────────────────────────────────
   function loadMetrics() {
-    const total = Number(localStorage.getItem(VISITS_KEY) ?? 0);
-    const today = getTodayVisits();
-    const subs  = getSubmissions();
-    const conv  = total > 0 ? ((subs.length / total) * 100).toFixed(1) : '0.0';
-    setText('visits-total',    String(total));
-    setText('visits-today',    String(today));
+    const log      = getVisitLog();
+    const todayKey = new Date().toISOString().slice(0, 10);
+
+    // Unique IPs (from visit log)
+    const uniqueTotal = new Set(log.map(v => v.ip).filter(Boolean)).size;
+    const uniqueToday = new Set(
+      log.filter(v => v.timestamp?.slice(0, 10) === todayKey && v.ip).map(v => v.ip)
+    ).size;
+
+    // Raw page views (from simple counters — includes visits not captured by IP API)
+    const rawTotal = Number(localStorage.getItem(VISITS_KEY) ?? 0);
+    const rawToday = getTodayVisits();
+
+    const subs = getSubmissions();
+    // Conversion based on unique visitors
+    const conv = uniqueTotal > 0 ? ((subs.length / uniqueTotal) * 100).toFixed(1) : '0.0';
+
+    setText('visits-today',    String(uniqueToday));
+    setText('visits-total',    String(uniqueTotal));
+    setText('pageviews-today', String(rawToday));
+    setText('pageviews-total', String(rawTotal));
     setText('forms-count',     String(subs.length));
     setText('conversion-rate', conv + '%');
     setText('forms-badge',     subs.length > 0 ? `+${subs.length}` : 'Leads');
@@ -764,9 +927,6 @@ const plansJSON = JSON.stringify(PLANS);
   });
 
   // ── Plan Editor ───────────────────────────────────────────
-  interface Feature  { label: string; included: boolean; }
-  interface PlanData { id:string; name:string; emoji:string; featured:boolean; featuredLabel:string; description:string; priceMonthly:number; priceAnnual:number; annualSavingsLabel:string; ctaLabel:string; ctaVariant:string; ctaHref:string; features:Feature[]; }
-
   function getDefaultPlans(): PlanData[] {
     const el = document.getElementById('default-plans');
     try { return JSON.parse(el?.textContent ?? '[]'); } catch { return []; }
@@ -775,14 +935,17 @@ const plansJSON = JSON.stringify(PLANS);
   function getCurrentPlans(): PlanData[] {
     try {
       const stored = localStorage.getItem(PLANS_OVERRIDE);
-      return stored ? JSON.parse(stored) : getDefaultPlans();
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return getDefaultPlans();
     } catch { return getDefaultPlans(); }
   }
 
-  let editingPlans: PlanData[] = [];
-
   function renderPlanEditor() {
     editingPlans = getCurrentPlans();
+    if (editingPlans.length === 0) editingPlans = getDefaultPlans();
     rebuildGrid();
   }
 
@@ -790,6 +953,8 @@ const plansJSON = JSON.stringify(PLANS);
     const grid = document.getElementById('plans-editor-grid')!;
     grid.innerHTML = editingPlans.map((plan, i) => buildPlanCard(plan, i)).join('');
     attachCardListeners();
+    updatePlanCheckboxes();        // safe — uses getElementById internally
+    updateMonthlyPlanCheckboxes(); // safe — uses getElementById internally
   }
 
   function buildPlanCard(plan: PlanData, i: number): string {
@@ -807,7 +972,7 @@ const plansJSON = JSON.stringify(PLANS);
           class="!w-10 !px-1 text-center text-xl" title="Emoji del plan" />
         <input type="text" data-field="name" value="${esc(plan.name)}" placeholder="Nombre del plan"
           class="flex-1 font-bold" />
-        <button class="remove-plan-btn flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-all text-lg leading-none" data-plan-index="${i}" title="Eliminar plan">×</button>
+        <button class="remove-plan-btn flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all text-xl font-bold leading-none shadow-sm" data-plan-index="${i}" title="Eliminar plan">×</button>
       </div>
 
       <!-- Featured toggle -->
@@ -965,9 +1130,37 @@ const plansJSON = JSON.stringify(PLANS);
     });
   }
 
+  // ── Auto-guardado silencioso ─────────────────────────────
+  // Cada vez que el usuario edita un campo del plan editor, guardamos en
+  // localStorage para que un F5 nunca pierda los cambios.
+  let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+  function autoSavePlans() {
+    if (autoSaveTimer) clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+      const current = collectAllPlans();
+      if (current.length > 0) {
+        current.forEach(p => {
+          if (p.priceMonthly !== p.priceAnnual && p.priceAnnual > 0) {
+            const saved = Math.round((p.priceMonthly - p.priceAnnual) * 12);
+            const pct   = Math.round((1 - p.priceAnnual / p.priceMonthly) * 100);
+            p.annualSavingsLabel = `Facturado anualmente — ahorras S/ ${saved} (${pct}% dto.)`;
+          } else { p.annualSavingsLabel = ''; }
+        });
+        localStorage.setItem(PLANS_OVERRIDE, JSON.stringify(current));
+      }
+    }, 600); // debounce 600 ms
+  }
+
+  document.getElementById('plans-editor-grid')!.addEventListener('input', autoSavePlans);
+  document.getElementById('plans-editor-grid')!.addEventListener('change', autoSavePlans);
+
   // Save plans
   document.getElementById('save-plans-btn')!.addEventListener('click', () => {
     editingPlans = collectAllPlans();
+    if (editingPlans.length === 0) {
+      alert('No hay planes para guardar. Usa "Restaurar defaults" primero.');
+      return;
+    }
     // Auto-generate annualSavingsLabel
     editingPlans.forEach(p => {
       if (p.priceMonthly !== p.priceAnnual && p.priceAnnual > 0) {
@@ -985,7 +1178,9 @@ const plansJSON = JSON.stringify(PLANS);
 
   // Add new plan
   document.getElementById('add-plan-btn')!.addEventListener('click', () => {
-    editingPlans = collectAllPlans();
+    // If there are cards in DOM, sync from them; otherwise keep current editingPlans
+    const cards = document.querySelectorAll('.plan-editor-card');
+    if (cards.length > 0) editingPlans = collectAllPlans();
     editingPlans.push({
       id: `plan-${Date.now()}`,
       name: 'Nuevo Plan',
@@ -1014,16 +1209,173 @@ const plansJSON = JSON.stringify(PLANS);
     showToast('Planes restaurados a los valores originales');
   });
 
-  // Apply global discount
+  // ── Plan selector dropdown (for discount) ────────────────
+  const planSelectorBtn      = document.getElementById('plan-selector-btn')!;
+  const planSelectorDropdown = document.getElementById('plan-selector-dropdown')!;
+  const selectAllCheckbox    = document.getElementById('select-all-plans') as HTMLInputElement;
+  const planCheckboxList     = document.getElementById('plan-checkboxes-list')!;
+  const planSelectorLabel    = document.getElementById('plan-selector-label')!;
+
+  planSelectorBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    planSelectorDropdown.classList.toggle('hidden');
+  });
+  document.addEventListener('click', () => planSelectorDropdown.classList.add('hidden'));
+  planSelectorDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+  // These helpers use getElementById so they work regardless of declaration order
+  function updatePlanCheckboxes() {
+    const cbList     = document.getElementById('plan-checkboxes-list');
+    const selectAll  = document.getElementById('select-all-plans') as HTMLInputElement | null;
+    if (!cbList) return;
+
+    cbList.innerHTML = editingPlans.map((p, i) => `
+      <label class="flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer hover:bg-orange-50 transition-colors">
+        <input type="checkbox" class="plan-discount-cb w-4 h-4 rounded" data-plan-index="${i}" checked style="accent-color:#E85C1A;" />
+        <span class="text-xs text-gray-700 font-medium">${esc(p.emoji)} ${esc(p.name)}</span>
+      </label>`).join('');
+
+    syncSelectorLabel();
+
+    cbList.querySelectorAll<HTMLInputElement>('.plan-discount-cb').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const all = cbList.querySelectorAll<HTMLInputElement>('.plan-discount-cb');
+        const n   = [...all].filter(c => c.checked).length;
+        if (selectAll) {
+          selectAll.indeterminate = n > 0 && n < all.length;
+          selectAll.checked = n === all.length;
+        }
+        syncSelectorLabel();
+      });
+    });
+  }
+
+  function syncSelectorLabel() {
+    const cbList  = document.getElementById('plan-checkboxes-list');
+    const labelEl = document.getElementById('plan-selector-label');
+    if (!cbList || !labelEl) return;
+    const all     = cbList.querySelectorAll<HTMLInputElement>('.plan-discount-cb');
+    const n       = [...all].filter(c => c.checked).length;
+    if (n === 0)          labelEl.textContent = 'Ningún plan';
+    else if (n === all.length) labelEl.textContent = 'Todos los planes';
+    else labelEl.textContent = `${n} plan${n > 1 ? 'es' : ''} seleccionado${n > 1 ? 's' : ''}`;
+  }
+
+  function getSelectedPlanIndices(): number[] {
+    const cbList = document.getElementById('plan-checkboxes-list');
+    if (!cbList) return editingPlans.map((_, i) => i);
+    return [...cbList.querySelectorAll<HTMLInputElement>('.plan-discount-cb')]
+      .filter(cb => cb.checked)
+      .map(cb => Number(cb.dataset.planIndex));
+  }
+
+  selectAllCheckbox.addEventListener('change', () => {
+    const cbList = document.getElementById('plan-checkboxes-list');
+    cbList?.querySelectorAll<HTMLInputElement>('.plan-discount-cb').forEach(cb => {
+      cb.checked = selectAllCheckbox.checked;
+    });
+    selectAllCheckbox.indeterminate = false;
+    syncSelectorLabel();
+  });
+
+  // ── Monthly plan selector dropdown ───────────────────────
+  const monthlyPlanSelectorBtn      = document.getElementById('monthly-plan-selector-btn')!;
+  const monthlyPlanSelectorDropdown = document.getElementById('monthly-plan-selector-dropdown')!;
+  const selectAllMonthlyCheckbox    = document.getElementById('select-all-monthly-plans') as HTMLInputElement;
+
+  monthlyPlanSelectorBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    monthlyPlanSelectorDropdown.classList.toggle('hidden');
+  });
+  document.addEventListener('click', () => monthlyPlanSelectorDropdown.classList.add('hidden'));
+  monthlyPlanSelectorDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+  function updateMonthlyPlanCheckboxes() {
+    const cbList    = document.getElementById('monthly-plan-checkboxes-list');
+    const selectAll = document.getElementById('select-all-monthly-plans') as HTMLInputElement | null;
+    if (!cbList) return;
+
+    cbList.innerHTML = editingPlans.map((p, i) => `
+      <label class="flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer hover:bg-blue-50 transition-colors">
+        <input type="checkbox" class="monthly-discount-cb w-4 h-4 rounded" data-plan-index="${i}" checked style="accent-color:#2563eb;" />
+        <span class="text-xs text-gray-700 font-medium">${esc(p.emoji)} ${esc(p.name)}</span>
+      </label>`).join('');
+
+    syncMonthlySelectorLabel();
+
+    cbList.querySelectorAll<HTMLInputElement>('.monthly-discount-cb').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const all = cbList.querySelectorAll<HTMLInputElement>('.monthly-discount-cb');
+        const n   = [...all].filter(c => c.checked).length;
+        if (selectAll) {
+          selectAll.indeterminate = n > 0 && n < all.length;
+          selectAll.checked = n === all.length;
+        }
+        syncMonthlySelectorLabel();
+      });
+    });
+  }
+
+  function syncMonthlySelectorLabel() {
+    const cbList  = document.getElementById('monthly-plan-checkboxes-list');
+    const labelEl = document.getElementById('monthly-plan-selector-label');
+    if (!cbList || !labelEl) return;
+    const all = cbList.querySelectorAll<HTMLInputElement>('.monthly-discount-cb');
+    const n   = [...all].filter(c => c.checked).length;
+    if (n === 0)               labelEl.textContent = 'Ningún plan';
+    else if (n === all.length) labelEl.textContent = 'Todos los planes';
+    else labelEl.textContent = `${n} plan${n > 1 ? 'es' : ''} seleccionado${n > 1 ? 's' : ''}`;
+  }
+
+  function getSelectedMonthlyPlanIndices(): number[] {
+    const cbList = document.getElementById('monthly-plan-checkboxes-list');
+    if (!cbList) return editingPlans.map((_, i) => i);
+    return [...cbList.querySelectorAll<HTMLInputElement>('.monthly-discount-cb')]
+      .filter(cb => cb.checked)
+      .map(cb => Number(cb.dataset.planIndex));
+  }
+
+  selectAllMonthlyCheckbox.addEventListener('change', () => {
+    const cbList = document.getElementById('monthly-plan-checkboxes-list');
+    cbList?.querySelectorAll<HTMLInputElement>('.monthly-discount-cb').forEach(cb => {
+      cb.checked = selectAllMonthlyCheckbox.checked;
+    });
+    selectAllMonthlyCheckbox.indeterminate = false;
+    syncMonthlySelectorLabel();
+  });
+
+  // Apply monthly discount
+  document.getElementById('apply-monthly-discount-btn')!.addEventListener('click', () => {
+    const pct = Number((document.getElementById('monthly-discount') as HTMLInputElement).value);
+    if (isNaN(pct) || pct < 0 || pct > 100) { alert('Ingresa un porcentaje válido entre 0 y 100.'); return; }
+    const selected = getSelectedMonthlyPlanIndices();
+    if (!selected.length) { alert('Selecciona al menos un plan para aplicar el descuento.'); return; }
+    editingPlans = collectAllPlans();
+    selected.forEach(i => {
+      editingPlans[i].priceMonthly = pct === 0 ? editingPlans[i].priceMonthly
+        : Math.round(editingPlans[i].priceMonthly * (1 - pct / 100));
+    });
+    rebuildGrid();
+    autoSavePlans();
+    const names = selected.map(i => editingPlans[i]?.name ?? `Plan ${i+1}`).join(', ');
+    showToast(`Descuento mensual del ${pct}% aplicado a: ${names}`);
+  });
+
+  // Apply global discount (to selected plans only)
   document.getElementById('apply-discount-btn')!.addEventListener('click', () => {
     const pct = Number((document.getElementById('global-discount') as HTMLInputElement).value);
     if (isNaN(pct) || pct < 0 || pct > 100) { alert('Ingresa un porcentaje válido entre 0 y 100.'); return; }
+    const selected = getSelectedPlanIndices();
+    if (!selected.length) { alert('Selecciona al menos un plan para aplicar el descuento.'); return; }
     editingPlans = collectAllPlans();
-    editingPlans.forEach(p => {
-      p.priceAnnual = pct === 0 ? p.priceMonthly : Math.round(p.priceMonthly * (1 - pct / 100));
+    selected.forEach(i => {
+      editingPlans[i].priceAnnual = pct === 0 ? editingPlans[i].priceMonthly
+        : Math.round(editingPlans[i].priceMonthly * (1 - pct / 100));
     });
     rebuildGrid();
-    showToast(`Descuento del ${pct}% aplicado a todos los planes`);
+    autoSavePlans();
+    const names = selected.map(i => editingPlans[i]?.name ?? `Plan ${i+1}`).join(', ');
+    showToast(`Descuento del ${pct}% aplicado a: ${names}`);
   });
 
   // Download site.ts
@@ -1059,6 +1411,22 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
   });
 
   // ── Backend Section (Supabase) ────────────────────────────
+  function applyConnectedUI() {
+    const statusText     = document.getElementById('backend-status-text')!;
+    const connectedBadge = document.getElementById('backend-connected-badge')!;
+    const connectedDiv   = document.getElementById('backend-connected')!;
+    const dbStatusBadge  = document.getElementById('db-status-badge')!;
+    const dataSourceLabel = document.getElementById('data-source-label');
+    statusText.textContent  = 'Conectado · PostgreSQL';
+    statusText.className    = 'font-semibold text-emerald-600';
+    connectedBadge.classList.remove('hidden');
+    connectedDiv.classList.remove('hidden');
+    dbStatusBadge.textContent = '✓ DB activa';
+    dbStatusBadge.className   = 'ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
+    dbStatusBadge.classList.remove('hidden');
+    if (dataSourceLabel) dataSourceLabel.textContent = 'Supabase PostgreSQL';
+  }
+
   async function initBackendSection() {
     const statusText      = document.getElementById('backend-status-text')!;
     const connectedBadge  = document.getElementById('backend-connected-badge')!;
@@ -1076,11 +1444,16 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
       dbStatusBadge.textContent = '⚠ Sin DB';
       dbStatusBadge.className   = 'ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700';
       dbStatusBadge.classList.remove('hidden');
+      sessionStorage.removeItem(DB_STATUS_KEY);
       return;
     }
 
-    // Supabase configured — load stats
-    statusText.textContent  = 'conectando...';
+    // Si ya conectó antes en esta sesión → mostrar estado conectado de inmediato
+    if (sessionStorage.getItem(DB_STATUS_KEY) === 'connected') {
+      applyConnectedUI();
+    } else {
+      statusText.textContent = 'conectando...';
+    }
     try {
       const [allVisits, todayVisits, allLeads] = await Promise.all([
         fetchVisits(1000),
@@ -1126,22 +1499,28 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
       }));
       localStorage.setItem('usqay_visit_log', JSON.stringify(visitsMapped));
 
-      // UI
-      statusText.textContent  = 'Conectado · PostgreSQL';
-      statusText.className    = 'font-semibold text-emerald-600';
-      connectedBadge.classList.remove('hidden');
-      connectedDiv.classList.remove('hidden');
-      dbStatusBadge.textContent = '✓ DB activa';
-      dbStatusBadge.className   = 'ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
-      dbStatusBadge.classList.remove('hidden');
-      dataSourceLabel?.textContent && (dataSourceLabel.textContent = 'Supabase PostgreSQL');
+      // UI + guardar estado en sessionStorage para no mostrar "verificando..." al recargar
+      applyConnectedUI();
+      sessionStorage.setItem(DB_STATUS_KEY, 'connected');
 
-    } catch (err) {
-      statusText.textContent = 'Error de conexión';
+    } catch (err: any) {
+      const detail = err?.message ?? String(err);
+      statusText.textContent = `Error: ${detail.slice(0, 80)}`;
       statusText.className   = 'font-semibold text-red-500';
       disconnBadge.classList.remove('hidden');
       setupDiv.classList.remove('hidden');
+      sessionStorage.removeItem(DB_STATUS_KEY);
       console.error('Supabase error:', err);
+
+      // Show visible alert so the user knows what failed
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700';
+      alertDiv.innerHTML = `<strong>⚠ Error al conectar con Supabase:</strong><br/><code class="block mt-1 break-all">${detail}</code><br/>
+        <span class="mt-2 block text-gray-600">Posibles causas:<br/>
+        1. El proyecto de Supabase está en pausa (entra a supabase.com → Resume project)<br/>
+        2. Las credenciales en <code>.env</code> son incorrectas<br/>
+        3. El servidor de desarrollo no fue reiniciado después de crear el <code>.env</code></span>`;
+      setupDiv.prepend(alertDiv);
     }
   }
 
@@ -1207,6 +1586,97 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
     showToast('CSV exportado desde Supabase');
   });
 
+  // ── Clear DB Modal ────────────────────────────────────────
+  type ClearTarget = 'visits' | 'leads' | 'all';
+  let pendingClearTarget: ClearTarget = 'all';
+
+  const clearDbModal      = document.getElementById('clear-db-modal')!;
+  const clearDbPassword   = document.getElementById('clear-db-password') as HTMLInputElement;
+  const clearDbError      = document.getElementById('clear-db-error')!;
+  const clearDbDesc       = document.getElementById('clear-db-modal-desc')!;
+  const clearDbCancelBtn  = document.getElementById('clear-db-cancel-btn')!;
+  const clearDbConfirmBtn = document.getElementById('clear-db-confirm-btn')!;
+
+  function openClearModal(target: ClearTarget, desc: string) {
+    pendingClearTarget = target;
+    clearDbDesc.textContent = desc;
+    clearDbPassword.value   = '';
+    clearDbError.classList.add('hidden');
+    clearDbModal.classList.remove('hidden');
+    setTimeout(() => clearDbPassword.focus(), 50);
+  }
+
+  clearDbCancelBtn.addEventListener('click', () => {
+    clearDbModal.classList.add('hidden');
+  });
+  clearDbModal.addEventListener('click', (e) => {
+    if (e.target === clearDbModal) clearDbModal.classList.add('hidden');
+  });
+
+  document.getElementById('clear-visits-db-btn')?.addEventListener('click', () =>
+    openClearModal('visits', 'Se eliminarán TODAS las visitas de la base de datos. Esta acción no se puede deshacer.')
+  );
+  document.getElementById('clear-leads-db-btn')?.addEventListener('click', () =>
+    openClearModal('leads', 'Se eliminarán TODOS los formularios/leads de la base de datos. Esta acción no se puede deshacer.')
+  );
+  document.getElementById('clear-all-db-btn')?.addEventListener('click', () =>
+    openClearModal('all', 'Se eliminarán TODAS las visitas y leads de la base de datos Y del almacenamiento local. Esta acción no se puede deshacer.')
+  );
+
+  clearDbConfirmBtn.addEventListener('click', async () => {
+    if (clearDbPassword.value !== ADMIN_PASSWORD) {
+      clearDbError.classList.remove('hidden');
+      clearDbPassword.value = '';
+      clearDbPassword.focus();
+      return;
+    }
+    clearDbError.classList.add('hidden');
+    clearDbConfirmBtn.textContent = 'Limpiando...';
+    clearDbConfirmBtn.setAttribute('disabled', 'true');
+
+    try {
+      const errors: string[] = [];
+
+      if (pendingClearTarget === 'visits' || pendingClearTarget === 'all') {
+        const { error } = await clearVisits();
+        if (error) errors.push(`Visitas: ${error}`);
+        else {
+          localStorage.removeItem('usqay_visit_log');
+          localStorage.removeItem('usqay_visits_total');
+          localStorage.removeItem('usqay_visits_day');
+        }
+      }
+
+      if (pendingClearTarget === 'leads' || pendingClearTarget === 'all') {
+        const { error } = await clearSubmissions();
+        if (error) errors.push(`Leads: ${error}`);
+        else {
+          localStorage.removeItem('usqay_submissions');
+        }
+      }
+
+      clearDbModal.classList.add('hidden');
+
+      if (errors.length) {
+        alert(`Error al limpiar:\n${errors.join('\n')}`);
+      } else {
+        const labels: Record<ClearTarget, string> = {
+          visits: 'Visitas eliminadas de la DB',
+          leads:  'Leads eliminados de la DB',
+          all:    'Base de datos y datos locales limpiados',
+        };
+        showToast(labels[pendingClearTarget]);
+        // Refresh metrics and table
+        loadMetrics();
+        renderTable('');
+        await initBackendSection();
+      }
+    } finally {
+      clearDbConfirmBtn.textContent = 'Confirmar y limpiar';
+      clearDbConfirmBtn.removeAttribute('disabled');
+    }
+  });
+
   // Toast helper
   let toastTimer: ReturnType<typeof setTimeout> | null = null;
   function showToast(msg: string) {
@@ -1243,9 +1713,10 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
       ? all.filter(v => v.timestamp?.slice(0, 10) === today)
       : all;
 
+    const uniqueInList = new Set(list.map(v => v.ip).filter(Boolean)).size;
     visitModalSub.textContent = filterToday
-      ? `Visitas de hoy (${new Date().toLocaleDateString('es-PE', { day:'2-digit', month:'long', year:'numeric' })})`
-      : `Todas las visitas registradas (${all.length} en total)`;
+      ? `Hoy: ${list.length} páginas vistas · ${uniqueInList} IPs únicas`
+      : `Total: ${all.length} páginas vistas · ${new Set(all.map(v => v.ip).filter(Boolean)).size} IPs únicas`;
 
     renderVisitLog(list, all);
     buildSummary(list);
