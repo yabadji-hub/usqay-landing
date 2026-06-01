@@ -85,6 +85,12 @@ export async function updateSubmissionStatus(id: string, estado: string): Promis
   await supabase.from('submissions').update({ estado }).eq('id', id);
 }
 
+export async function deleteSubmission(id: string): Promise<{ error: string | null }> {
+  if (!supabase) return { error: 'Supabase no configurado' };
+  const { error } = await supabase.from('submissions').delete().eq('id', id);
+  return { error: error?.message ?? null };
+}
+
 // ── Clear helpers ──────────────────────────────────────────────
 export async function clearVisits(): Promise<{ error: string | null }> {
   if (!supabase) return { error: 'Supabase no configurado' };
