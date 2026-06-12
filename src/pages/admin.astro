@@ -776,7 +776,7 @@ const plansJSON = JSON.stringify(PLANS);
   interface PlanData { id:string; name:string; emoji:string; featured:boolean; featuredLabel:string; description:string; priceMonthly:number; priceAnnual:number; annualSavingsLabel:string; ctaLabel:string; ctaVariant:string; ctaHref:string; features:Feature[]; }
 
   // ── Constants ─────────────────────────────────────────────
-  const ADMIN_PASSWORD  = 'usqay2026';
+  const ADMIN_PASSWORD  = 'usqay2026x1';
   const SESSION_KEY     = 'usqay_admin_session';
   const VISITS_KEY      = 'usqay_visits_total';
   const VISITS_DAY_KEY  = 'usqay_visits_day';
@@ -1338,7 +1338,7 @@ const plansJSON = JSON.stringify(PLANS);
         <span class="text-xs font-semibold text-gray-600">Marcar como plan popular (destacado)</span>
       </label>
       ${plan.featured ? `
-      <input type="text" data-field="featuredLabel" value="${esc(plan.featuredLabel||'⭐ Más popular')}" placeholder="Etiqueta destacado" class="text-xs" />` : ''}
+      <input type="text" data-field="featuredLabel" value="${esc(plan.featuredLabel||'Más popular')}" placeholder="Etiqueta destacado" class="text-xs" />` : ''}
 
       <!-- Prices -->
       <div class="grid grid-cols-2 gap-2">
@@ -1410,7 +1410,7 @@ const plansJSON = JSON.stringify(PLANS);
       emoji:            get('emoji'),
       name:             get('name'),
       featured:         isFeatured,
-      featuredLabel:    isFeatured ? (get('featuredLabel') || '⭐ Más popular') : '',
+      featuredLabel:    isFeatured ? (get('featuredLabel') || 'Más popular') : '',
       description:      get('description'),
       priceMonthly:     Number(get('priceMonthly')) || 0,
       priceAnnual:      Number(get('priceAnnual'))  || 0,

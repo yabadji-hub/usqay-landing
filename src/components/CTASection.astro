@@ -2,7 +2,7 @@
 import { CTA } from '@/data/site';
 ---
 
-<section class="px-4 sm:px-6 py-20 bg-white">
+<section class="px-4 sm:px-6 py-10 sm:py-20 bg-white">
   <div class="max-w-5xl mx-auto">
     <div class="relative rounded-3xl overflow-hidden"
       style="background: linear-gradient(135deg, #E85C1A 0%, #C44B15 50%, #1B3D6E 100%);">
@@ -12,26 +12,26 @@ import { CTA } from '@/data/site';
         style="background-image: radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px); background-size: 40px 40px;">
       </div>
 
-      <div class="relative px-8 py-16 text-center">
-        <span class="inline-block bg-white/20 text-white text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6 border border-white/30">
+      <div class="relative px-6 py-8 sm:px-8 sm:py-16 text-center">
+        <span class="inline-block bg-white/20 text-white text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-3 sm:mb-6 border border-white/30">
           Oferta limitada
         </span>
         <h2
-          class="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4 leading-tight"
+          class="text-2xl sm:text-4xl lg:text-5xl font-black text-white mb-2 sm:mb-4 leading-tight"
           style="font-family: 'Playfair Display', serif;"
         >
           {CTA.heading}
         </h2>
-        <p class="text-orange-100 text-base sm:text-lg leading-relaxed mb-10 max-w-lg mx-auto whitespace-pre-line">
+        <p class="text-orange-100 text-sm sm:text-lg leading-relaxed mb-5 sm:mb-10 max-w-lg mx-auto whitespace-pre-line">
           {CTA.subheading}
         </p>
         <a
           href={CTA.ctaHref}
-          class="inline-block bg-white text-usqay-orange font-black text-lg px-12 py-5 rounded-2xl hover:bg-orange-50 transition-all duration-200 shadow-2xl hover:shadow-white/30 active:scale-95"
+          class="inline-block bg-white text-usqay-orange font-black text-base sm:text-lg px-8 py-3.5 sm:px-12 sm:py-5 rounded-2xl hover:bg-orange-50 transition-all duration-200 shadow-2xl hover:shadow-white/30 active:scale-95"
         >
           {CTA.ctaLabel} →
         </a>
-        <p class="text-orange-200 text-xs mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
+        <p class="text-orange-200 text-xs mt-4 sm:mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
           {CTA.trust.map((t) => <span class="flex items-center gap-1"><span class="text-white">✓</span> {t}</span>)}
         </p>
       </div>

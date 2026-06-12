@@ -2,13 +2,13 @@
 const FORMSPREE_ID = 'xykolkrw';
 ---
 
-<section id="contacto" class="py-20 px-4 sm:px-6 bg-usqay-cream border-t border-usqay-border">
+<section id="contacto" class="hidden py-10 sm:py-20 px-4 sm:px-6 bg-usqay-cream border-t border-usqay-border">
   <div class="max-w-xl mx-auto">
-    <div class="text-center mb-10">
+    <div class="text-center mb-6 sm:mb-10">
       <span class="inline-block text-usqay-orange text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full bg-white border border-usqay-orange/20">
         Contacto
       </span>
-      <h2 class="text-3xl sm:text-4xl font-black text-usqay-navy mt-2 mb-3" style="font-family: 'Playfair Display', serif;">
+      <h2 class="text-2xl sm:text-4xl font-black text-usqay-navy mt-2 mb-2 sm:mb-3" style="font-family: 'Playfair Display', serif;">
         Solicita tu demo gratuita
       </h2>
       <p class="text-usqay-muted text-sm leading-relaxed max-w-sm mx-auto">
@@ -16,21 +16,21 @@ const FORMSPREE_ID = 'xykolkrw';
       </p>
     </div>
 
-    <div class="bg-white rounded-3xl shadow-xl border border-usqay-border p-8">
-      <form id="contact-form" action={`https://formspree.io/f/${FORMSPREE_ID}`} method="POST" class="space-y-5" novalidate>
+    <div class="bg-white rounded-3xl shadow-xl border border-usqay-border p-5 sm:p-8">
+      <form id="contact-form" action={`https://formspree.io/f/${FORMSPREE_ID}`} method="POST" class="space-y-3 sm:space-y-5" novalidate>
 
         <!-- Nombre + WhatsApp -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
           <!-- Nombre -->
           <div class="field-group">
-            <label for="nombre" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+            <label for="nombre" class="block text-sm font-semibold text-usqay-navy mb-1">
               Nombre completo <span class="text-usqay-orange">*</span>
             </label>
             <input
               type="text" id="nombre" name="nombre" required
               placeholder="Ej. Carlos Mendoza"
               autocomplete="name"
-              class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
+              class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-2.5 sm:py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
             />
             <p class="field-error hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
               <span>⚠</span><span class="error-msg"></span>
@@ -39,14 +39,14 @@ const FORMSPREE_ID = 'xykolkrw';
 
           <!-- WhatsApp -->
           <div class="field-group">
-            <label for="telefono" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+            <label for="telefono" class="block text-sm font-semibold text-usqay-navy mb-1">
               WhatsApp <span class="text-usqay-orange">*</span>
             </label>
             <input
               type="tel" id="telefono" name="telefono" required
               placeholder="Ej. 996 123 456"
               autocomplete="tel"
-              class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
+              class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-2.5 sm:py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
             />
             <p class="field-error hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
               <span>⚠</span><span class="error-msg"></span>
@@ -56,14 +56,14 @@ const FORMSPREE_ID = 'xykolkrw';
 
         <!-- Email -->
         <div class="field-group">
-          <label for="email" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+          <label for="email" class="block text-sm font-semibold text-usqay-navy mb-1">
             Correo electrónico <span class="text-usqay-orange">*</span>
           </label>
           <input
             type="email" id="email" name="email" required
             placeholder="tu@correo.com"
             autocomplete="email"
-            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
+            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-2.5 sm:py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all"
           />
           <p class="field-error hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
             <span>⚠</span><span class="error-msg"></span>
@@ -72,12 +72,12 @@ const FORMSPREE_ID = 'xykolkrw';
 
         <!-- Tipo de negocio -->
         <div class="field-group">
-          <label for="negocio" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+          <label for="negocio" class="block text-sm font-semibold text-usqay-navy mb-1">
             Tipo de negocio <span class="text-usqay-orange">*</span>
           </label>
           <select
             id="negocio" name="tipo_negocio" required
-            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text focus:outline-none transition-all appearance-none"
+            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-2.5 sm:py-3 text-sm text-usqay-text focus:outline-none transition-all appearance-none"
           >
             <option value="" disabled selected>Selecciona una opción</option>
             <option value="restaurante">Restaurante</option>
@@ -94,19 +94,19 @@ const FORMSPREE_ID = 'xykolkrw';
 
         <!-- Mensaje -->
         <div class="field-group">
-          <label for="mensaje" class="block text-sm font-semibold text-usqay-navy mb-1.5">
+          <label for="mensaje" class="block text-sm font-semibold text-usqay-navy mb-1">
             ¿Qué necesitas gestionar?
           </label>
           <textarea
             id="mensaje" name="mensaje" rows="3"
             placeholder="Pedidos, inventario, facturación..."
-            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all resize-none"
+            class="form-input w-full bg-usqay-cream border border-usqay-border rounded-xl px-4 py-2.5 sm:py-3 text-sm text-usqay-text placeholder-usqay-subtle focus:outline-none transition-all resize-none"
           ></textarea>
         </div>
 
         <!-- Botón -->
         <button type="submit" id="submit-btn"
-          class="w-full bg-gradient-to-r from-usqay-orange to-usqay-orange-dark text-white font-black py-4 rounded-2xl hover:opacity-90 transition-all duration-200 text-base shadow-lg active:scale-95">
+          class="w-full bg-gradient-to-r from-usqay-orange to-usqay-orange-dark text-white font-black py-3 sm:py-4 rounded-2xl hover:opacity-90 transition-all duration-200 text-base shadow-lg active:scale-95">
           Solicitar demo gratuita →
         </button>
 
@@ -147,6 +147,30 @@ const FORMSPREE_ID = 'xykolkrw';
 
 <script>
   import { insertSubmission, isSupabaseConfigured } from '@/lib/supabase';
+
+  // ── Mostrar el formulario solo cuando piden la demo ───────────
+  const contactSection = document.getElementById('contacto') as HTMLElement;
+
+  function revealContact() {
+    contactSection.classList.remove('hidden');
+    // Esperar a que se pinte antes de hacer scroll
+    requestAnimationFrame(() => {
+      contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      contactSection.querySelector<HTMLInputElement>('#nombre')?.focus({ preventScroll: true });
+    });
+  }
+
+  // Delegación: cualquier enlace que apunte a #contacto despliega el formulario
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement).closest('a[href="#contacto"]');
+    if (trigger) {
+      e.preventDefault();
+      revealContact();
+    }
+  });
+
+  // Si entran directo con el hash #contacto en la URL, mostrarlo
+  if (window.location.hash === '#contacto') revealContact();
 
   // ── Reglas de validación ──────────────────────────────────────
   const RULES: Record<string, { validate: (v: string) => boolean; message: string }[]> = {

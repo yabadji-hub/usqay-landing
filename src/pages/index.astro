@@ -7,12 +7,9 @@ import PricingSection from '@/components/PricingSection.astro';
 import StatsSection from '@/components/StatsSection.astro';
 import SuccessCases from '@/components/SuccessCases.astro';
 import BenefitsSection from '@/components/BenefitsSection.astro';
-import CompanyLogos from '@/components/CompanyLogos.astro';
-import FAQSection from '@/components/FAQSection.astro';
 import CTASection from '@/components/CTASection.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import PromoSection from '@/components/PromoSection.astro';
-import ChefSection from '@/components/ChefSection.astro';
 ---
 
 <BaseLayout>
@@ -96,10 +93,10 @@ import ChefSection from '@/components/ChefSection.astro';
   <!-- Oferta con cuenta regresiva -->
   <PromoSection />
 
-  <!-- Chef animado 3D -->
-  <ChefSection />
+  <!-- Beneficios (segundo apartado) -->
+  <BenefitsSection />
 
-  <!-- Hero + Toggle de facturación -->
+  <!-- Hero + Toggle de facturación (junto a los planes) -->
   <HeroSection />
 
   <!-- Planes de precios -->
@@ -108,23 +105,15 @@ import ChefSection from '@/components/ChefSection.astro';
   <!-- Estadísticas clave -->
   <StatsSection />
 
-  <!-- Casos de éxito -->
-  <SuccessCases />
-
-  <!-- Beneficios -->
-  <BenefitsSection />
-
-  <!-- Tipos de negocios que usa Usqay -->
-  <CompanyLogos />
-
-  <!-- FAQ -->
-  <FAQSection />
 
   <!-- CTA final -->
   <CTASection />
 
   <!-- Formulario de captación de leads (requerimiento principal) -->
   <ContactForm />
+
+  <!-- Casos de éxito (video) — último -->
+  <SuccessCases />
 
   <!-- Botón flotante de WhatsApp -->
   <div class="whatsapp-fab">

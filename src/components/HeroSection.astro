@@ -2,7 +2,7 @@
 import { HERO } from '@/data/site';
 ---
 
-<section class="relative text-center px-4 sm:px-6 pt-20 pb-14 overflow-hidden bg-white">
+<section class="relative text-center px-4 sm:px-6 pt-5 pb-5 sm:pt-20 sm:pb-14 overflow-hidden bg-white">
   <!-- Fondo cálido con gradiente radial sutil (naranja = apetito, confianza) -->
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true"
     style="background: radial-gradient(ellipse 80% 50% at 50% -10%, #FFF0E8 0%, transparent 70%);">
@@ -13,17 +13,17 @@ import { HERO } from '@/data/site';
 
   <div class="relative max-w-3xl mx-auto">
     <!-- Label superior -->
-    <span class="inline-block text-usqay-orange text-xs font-semibold uppercase tracking-widest mb-4 px-3 py-1 rounded-full border border-usqay-orange/30 bg-usqay-orange-light">
+    <span class="inline-block text-usqay-orange text-xs font-semibold uppercase tracking-widest mb-2 sm:mb-4 px-3 py-1 rounded-full border border-usqay-orange/30 bg-usqay-orange-light">
       Sistema todo-en-uno para Piura
     </span>
 
     <h1
-      class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6 text-usqay-navy"
+      class="text-2xl sm:text-5xl lg:text-6xl font-black leading-tight mb-2 sm:mb-6 text-usqay-navy"
       style="font-family: 'Playfair Display', serif;"
     >
       {HERO.heading}
     </h1>
-    <p class="text-usqay-muted text-lg max-w-xl mx-auto mb-12 leading-relaxed">
+    <p class="text-usqay-muted text-sm sm:text-lg max-w-xl mx-auto mb-4 sm:mb-12 leading-relaxed">
       {HERO.subheading}
     </p>
 

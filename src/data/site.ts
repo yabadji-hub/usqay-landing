@@ -14,7 +14,7 @@ export const SITE = {
 // BANNER SUPERIOR
 // ============================================================
 export const BANNER = {
-  enabled: true,
+  enabled: false,
   text: '¿Tienes un restaurante en Piura?',
   highlight: 'Solicita tu demo gratuita',
   suffix: 'y descubre cómo Usqay digitaliza tu negocio en menos de 24 horas.',
@@ -27,7 +27,7 @@ export const BANNER = {
 export const HERO = {
   heading: 'El sistema que tu restaurante necesita para crecer',
   subheading:
-    'Gestiona pedidos, comandas, inventario y facturación desde una sola plataforma. Membresía mensual, sin costos de instalación.',
+    'Gestiona pedidos, comandas, inventario y facturación desde una sola plataforma. Membresía mensual flexible.',
   billingToggle: {
     monthly: 'Mensual',
     annual: 'Anual',
@@ -104,7 +104,7 @@ export const PLANS: Plan[] = [
     description: 'Solución completa con CRM incluido, múltiples usuarios y 3 dispositivos Cloud para escalar tu negocio.',
     emoji: '🚀',
     featured: true,
-    featuredLabel: '⭐ Más popular',
+    featuredLabel: 'Más popular',
     priceMonthly: 199,
     priceAnnual: 173,
     annualSavingsLabel: 'Facturado anualmente — ahorras S/ 312 (13% dto.)',
@@ -229,38 +229,33 @@ export interface Benefit {
   emoji: string;
   title: string;
   description: string;
+  image?: string;
 }
 
 export const BENEFITS: Benefit[] = [
   {
     emoji: '🧾',
-    title: 'Pedidos y comandas digital',
-    description: 'Tus mozos toman pedidos desde el celular. Llegan automáticamente a cocina sin errores ni demoras.',
+    title: 'Pedidos desde tablets',
+    description: 'Tus mozos toman pedidos desde el celular o tablet. Llegan automáticamente a cocina sin errores ni demoras.',
+    image: '/gestion_restaurantes/pedidos-tablets.jpg',
   },
   {
-    emoji: '📅',
-    title: 'Reservas online',
-    description: 'Gestiona mesas en tiempo real. Tus clientes reservan desde WhatsApp o la web.',
+    emoji: '🍽️',
+    title: 'Gestión de mesas',
+    description: 'Administra mesas y reservas en tiempo real. Controla la disponibilidad y ocupación de tu local al instante.',
+    image: '/gestion_restaurantes/gestion-mesas.jpg',
   },
   {
     emoji: '📦',
-    title: 'Inventario inteligente',
+    title: 'Control de stock',
     description: 'Controla insumos, recibe alertas de stock bajo y evita pérdidas por desabastecimiento.',
+    image: '/gestion_restaurantes/control-stock.jpg',
   },
   {
     emoji: '🧾',
     title: 'Facturación electrónica',
     description: 'Emite boletas y facturas electrónicas válidas ante SUNAT desde el mismo sistema.',
-  },
-  {
-    emoji: '📊',
-    title: 'Reportes en tiempo real',
-    description: 'Consulta ventas del día, platillos más pedidos y el rendimiento de tu restaurante desde tu celular.',
-  },
-  {
-    emoji: '📱',
-    title: 'Funciona online y offline',
-    description: 'Si se corta el internet, el sistema sigue funcionando. Cuando vuelve la conexión, sincroniza solo.',
+    image: '/gestion_restaurantes/facturacion.jpg',
   },
 ];
 
@@ -294,21 +289,6 @@ export const FAQS: FAQ[] = [
     answer:
       'Sí. Usqay funciona en modo offline cuando no hay conexión a internet. Cuando se restablece la conexión, sincroniza automáticamente todos los datos sin perder ningún registro.',
   },
-  {
-    question: '¿Puedo cancelar mi membresía en cualquier momento?',
-    answer:
-      'Sí, puedes cancelar cuando quieras sin penalizaciones. Seguirás teniendo acceso al sistema hasta el final del período pagado.',
-  },
-  {
-    question: '¿La facturación electrónica está conectada con SUNAT?',
-    answer:
-      'Sí. Los planes Pro y Enterprise incluyen facturación electrónica integrada y válida ante SUNAT. Emites boletas y facturas desde el mismo sistema sin necesidad de programas adicionales.',
-  },
-  {
-    question: '¿Usqay funciona para todo tipo de restaurante?',
-    answer:
-      'Sí. Usqay está diseñado para restaurantes de todo tipo: pollerías, cevicherías, fuentes de soda, chifas y más. Si vendes comida, Usqay es para ti.',
-  },
 ];
 
 // ============================================================
@@ -320,5 +300,5 @@ export const CTA = {
     'Únete a más de 800 restaurantes de Piura que ya usan Usqay.\nSolicita tu demo gratuita, sin compromisos.',
   ctaLabel: 'Solicitar demo gratuita',
   ctaHref: '#contacto',
-  trust: ['Sin costo de instalación', 'Capacitación incluida', 'Soporte en español'],
+  trust: ['Cancela cuando quieras', 'Capacitación incluida', 'Soporte en español'],
 } as const;

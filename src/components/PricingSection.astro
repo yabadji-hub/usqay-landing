@@ -7,9 +7,9 @@ const plansJSON = JSON.stringify(PLANS);
 <!-- Planes por defecto embebidos como JSON para override del admin -->
 <script id="default-pricing" type="application/json" is:inline set:html={plansJSON}></script>
 
-<section id="planes" class="bg-usqay-cream px-4 sm:px-6 py-20">
+<section id="planes" class="bg-usqay-cream px-4 sm:px-6 py-12 sm:py-20">
   <div class="max-w-6xl mx-auto">
-    <div id="pricing-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div id="pricing-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
       {
         PLANS.map((plan: Plan, i: number) => (
           <div
@@ -17,7 +17,7 @@ const plansJSON = JSON.stringify(PLANS);
               'pricing-card relative rounded-2xl flex flex-col',
               'transition-all duration-300 ease-out',
               plan.featured
-                ? 'shadow-2xl shadow-orange-200 scale-[1.03] hover:scale-[1.05]'
+                ? 'shadow-2xl shadow-orange-200 sm:scale-[1.03] sm:hover:scale-[1.05]'
                 : 'bg-white border border-usqay-border shadow-sm hover:shadow-xl hover:-translate-y-1',
             ].join(' ')}
             style={`--delay: ${i * 100}ms`}
@@ -28,14 +28,11 @@ const plansJSON = JSON.stringify(PLANS);
               </div>
             )}
 
-            <div class={['px-6 pt-8 pb-6 rounded-t-2xl', plan.featured ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white' : 'bg-white'].join(' ')}>
-              <div class={['w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4', plan.featured ? 'bg-white/20' : 'bg-usqay-orange-light'].join(' ')}>
-                {plan.emoji}
-              </div>
-              <h3 class={['text-xl font-black mb-1', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')} style="font-family: 'Playfair Display', serif;">
+            <div class={['px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6 rounded-t-2xl', plan.featured ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white' : 'bg-white'].join(' ')}>
+              <h3 class={['text-base sm:text-xl font-black mb-1', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')} style="font-family: 'Playfair Display', serif;">
                 {plan.name}
               </h3>
-              <p class={['text-xs leading-relaxed mb-5', plan.featured ? 'text-orange-100' : 'text-usqay-muted'].join(' ')}>
+              <p class={['text-xs leading-relaxed mb-3 sm:mb-5 line-clamp-4 sm:line-clamp-none min-h-[4.9rem] sm:min-h-0', plan.featured ? 'text-orange-100' : 'text-usqay-muted'].join(' ')}>
                 {plan.description}
               </p>
               <div class="mb-1">
@@ -45,7 +42,7 @@ const plansJSON = JSON.stringify(PLANS);
                     S/{plan.priceMonthly}
                   </span>
                   <span class={['text-base font-semibold', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')}>S/</span>
-                  <span class={['plan-price text-5xl font-black leading-none', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')}
+                  <span class={['plan-price text-3xl sm:text-5xl font-black leading-none', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')}
                     data-monthly={plan.priceMonthly} data-annual={plan.priceAnnual}>
                     {plan.priceMonthly}
                   </span>
@@ -69,9 +66,9 @@ const plansJSON = JSON.stringify(PLANS);
               </div>
             </div>
 
-            <div class={['px-6 py-4', plan.featured ? 'bg-usqay-orange-dark' : 'bg-white'].join(' ')}>
+            <div class={['px-4 py-3 sm:px-6 sm:py-4', plan.featured ? 'bg-usqay-orange-dark' : 'bg-white'].join(' ')}>
               <a href={plan.ctaHref}
-                class={['block w-full text-center py-3 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95',
+                class={['block w-full text-center py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95',
                   plan.featured
                     ? 'bg-white text-usqay-orange hover:bg-orange-50 shadow-md'
                     : 'bg-usqay-orange text-white hover:bg-usqay-orange-dark shadow-sm hover:shadow-orange-200 hover:shadow-md',
@@ -80,12 +77,12 @@ const plansJSON = JSON.stringify(PLANS);
               </a>
             </div>
 
-            <div class="bg-white flex-1 px-6 pt-5 pb-6 rounded-b-2xl">
-              <p class="text-[10px] uppercase tracking-widest text-usqay-subtle font-bold mb-4">Incluye</p>
-              <ul class="space-y-2.5">
+            <div class="bg-white flex-1 px-4 pt-4 pb-5 sm:px-6 sm:pt-5 sm:pb-6 rounded-b-2xl">
+              <p class="text-[10px] uppercase tracking-widest text-usqay-subtle font-bold mb-3 sm:mb-4">Incluye</p>
+              <ul class="space-y-1.5 sm:space-y-2.5">
                 {plan.features.map((f) => (
-                  <li class="flex items-start gap-2.5 text-sm leading-snug">
-                    <span class={['flex-shrink-0 mt-0.5 text-base leading-none', f.included ? 'text-usqay-green' : 'text-usqay-subtle'].join(' ')}>
+                  <li class="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm leading-snug">
+                    <span class={['flex-shrink-0 mt-0.5 text-sm sm:text-base leading-none', f.included ? 'text-usqay-green' : 'text-usqay-subtle'].join(' ')}>
                       {f.included ? '✓' : '✗'}
                     </span>
                     <span class={f.included ? 'text-usqay-text font-medium' : 'text-usqay-subtle line-through'}>
@@ -132,15 +129,15 @@ const plansJSON = JSON.stringify(PLANS);
     const cardCls = [
       'pricing-card relative rounded-2xl flex flex-col',
       'transition-all duration-300 ease-out',
-      f ? 'shadow-2xl shadow-orange-200 scale-[1.03] hover:scale-[1.05]'
+      f ? 'shadow-2xl shadow-orange-200 sm:scale-[1.03] sm:hover:scale-[1.05]'
         : 'bg-white border border-usqay-border shadow-sm hover:shadow-xl hover:-translate-y-1',
     ].join(' ');
 
     const hasSavings = Boolean(plan.annualSavingsLabel) && plan.priceMonthly !== plan.priceAnnual;
 
     const featuresHTML = plan.features.map(feat => `
-      <li class="flex items-start gap-2.5 text-sm leading-snug">
-        <span class="flex-shrink-0 mt-0.5 text-base leading-none ${feat.included ? 'text-usqay-green' : 'text-usqay-subtle'}">${feat.included ? '✓' : '✗'}</span>
+      <li class="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm leading-snug">
+        <span class="flex-shrink-0 mt-0.5 text-sm sm:text-base leading-none ${feat.included ? 'text-usqay-green' : 'text-usqay-subtle'}">${feat.included ? '✓' : '✗'}</span>
         <span class="${feat.included ? 'text-usqay-text font-medium' : 'text-usqay-subtle line-through'}">${feat.label}</span>
       </li>`).join('');
 
@@ -151,16 +148,15 @@ const plansJSON = JSON.stringify(PLANS);
             ${plan.featuredLabel}
           </div>` : ''}
 
-        <div class="px-6 pt-8 pb-6 rounded-t-2xl ${f ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white' : 'bg-white'}">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 ${f ? 'bg-white/20' : 'bg-usqay-orange-light'}">${plan.emoji}</div>
-          <h3 class="text-xl font-black mb-1 ${f ? 'text-white' : 'text-usqay-navy'}" style="font-family:'Playfair Display',serif;">${plan.name}</h3>
-          <p class="text-xs leading-relaxed mb-5 ${f ? 'text-orange-100' : 'text-usqay-muted'}">${plan.description}</p>
+        <div class="px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6 rounded-t-2xl ${f ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white' : 'bg-white'}">
+          <h3 class="text-base sm:text-xl font-black mb-1 ${f ? 'text-white' : 'text-usqay-navy'}" style="font-family:'Playfair Display',serif;">${plan.name}</h3>
+          <p class="text-xs leading-relaxed mb-3 sm:mb-5 line-clamp-4 sm:line-clamp-none min-h-[4.9rem] sm:min-h-0 ${f ? 'text-orange-100' : 'text-usqay-muted'}">${plan.description}</p>
           <div class="mb-1">
             <div class="flex items-baseline gap-0.5">
               <span class="plan-original text-sm line-through mr-1 ${f ? 'text-orange-200' : 'text-usqay-subtle'}"
                 data-monthly="${plan.priceMonthly}" data-annual="${plan.priceAnnual}" style="display:none">S/${plan.priceMonthly}</span>
               <span class="text-base font-semibold ${f ? 'text-white' : 'text-usqay-navy'}">S/</span>
-              <span class="plan-price text-5xl font-black leading-none ${f ? 'text-white' : 'text-usqay-navy'}"
+              <span class="plan-price text-3xl sm:text-5xl font-black leading-none ${f ? 'text-white' : 'text-usqay-navy'}"
                 data-monthly="${plan.priceMonthly}" data-annual="${plan.priceAnnual}">${plan.priceMonthly}</span>
               <span class="text-sm ml-1 ${f ? 'text-orange-100' : 'text-usqay-muted'}">/mes</span>
             </div>
@@ -179,16 +175,16 @@ const plansJSON = JSON.stringify(PLANS);
           </div>
         </div>
 
-        <div class="px-6 py-4 ${f ? 'bg-usqay-orange-dark' : 'bg-white'}">
-          <a href="${plan.ctaHref}" class="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 ${
+        <div class="px-4 py-3 sm:px-6 sm:py-4 ${f ? 'bg-usqay-orange-dark' : 'bg-white'}">
+          <a href="${plan.ctaHref}" class="block w-full text-center py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 ${
             f ? 'bg-white text-usqay-orange hover:bg-orange-50 shadow-md'
               : 'bg-usqay-orange text-white hover:bg-usqay-orange-dark shadow-sm hover:shadow-orange-200 hover:shadow-md'
           }">${plan.ctaLabel}</a>
         </div>
 
-        <div class="bg-white flex-1 px-6 pt-5 pb-6 rounded-b-2xl">
-          <p class="text-[10px] uppercase tracking-widest text-usqay-subtle font-bold mb-4">Incluye</p>
-          <ul class="space-y-2.5">${featuresHTML}</ul>
+        <div class="bg-white flex-1 px-4 pt-4 pb-5 sm:px-6 sm:pt-5 sm:pb-6 rounded-b-2xl">
+          <p class="text-[10px] uppercase tracking-widest text-usqay-subtle font-bold mb-3 sm:mb-4">Incluye</p>
+          <ul class="space-y-1.5 sm:space-y-2.5">${featuresHTML}</ul>
         </div>
       </div>`;
   }
