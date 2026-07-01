@@ -4,30 +4,9 @@ const PROMO_DEADLINE_HOURS = 5;
 
 <section class="relative overflow-hidden bg-usqay-navy min-h-screen flex flex-col items-center justify-center px-4 py-12" data-deadline-hours={PROMO_DEADLINE_HOURS}>
 
-  <!-- Video de fondo -->
-  <video
-    class="absolute inset-0 w-full h-full object-contain sm:object-cover z-0 pointer-events-none"
-    src="/videos/promo.mp4"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="auto"
-    aria-hidden="true"
-  ></video>
-
-  <!-- Capa de color para legibilidad del texto -->
-  <div class="absolute inset-0 z-0 bg-black/60 pointer-events-none" aria-hidden="true"></div>
 
   <!-- Contenido centrado -->
   <div class="relative z-10 w-full max-w-xl mx-auto text-center flex flex-col items-center gap-6">
-
-    <!-- Logo -->
-    <img
-      src="/usqay-logo.svg"
-      alt="Usqay"
-      class="h-10 w-auto brightness-0 invert"
-    />
 
     <!-- Badge "Promo" -->
     <div class="bg-white text-usqay-navy text-3xl font-extrabold px-8 py-3 rounded-lg shadow-xl tracking-tight">

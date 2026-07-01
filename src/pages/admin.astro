@@ -48,10 +48,15 @@ const plansJSON = JSON.stringify(PLANS);
 
         <form id="login-form" class="space-y-4">
           <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Correo electrónico</label>
+            <input type="email" id="admin-email" autocomplete="username" placeholder="correo@ejemplo.com"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E85C1A] focus:border-transparent transition-all" />
+          </div>
+          <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1.5">Contraseña</label>
             <input type="password" id="admin-password" autocomplete="current-password" placeholder="••••••••"
               class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E85C1A] focus:border-transparent transition-all" />
-            <p id="login-error" class="hidden mt-2 text-xs text-red-500 font-medium">Contraseña incorrecta.</p>
+            <p id="login-error" class="hidden mt-2 text-xs text-red-500 font-medium">Correo o contraseña incorrectos.</p>
             <p id="login-attempts-left" class="hidden mt-1.5 text-xs text-amber-600 font-semibold"></p>
           </div>
           <button id="login-submit-btn" type="submit"
@@ -192,7 +197,8 @@ const plansJSON = JSON.stringify(PLANS);
           <button data-status-filter="Nuevo" class="status-filter-btn text-xs font-semibold px-3 py-1.5 rounded-full border transition-all">🟢 Nuevo</button>
           <button data-status-filter="Contactado" class="status-filter-btn text-xs font-semibold px-3 py-1.5 rounded-full border transition-all">🔵 Contactado</button>
           <button data-status-filter="En seguimiento" class="status-filter-btn text-xs font-semibold px-3 py-1.5 rounded-full border transition-all">🟠 En seguimiento</button>
-          <button data-status-filter="Cerrado" class="status-filter-btn text-xs font-semibold px-3 py-1.5 rounded-full border transition-all">⚫ Cerrado</button>
+          <button data-status-filter="Cerrado"    class="status-filter-btn text-xs font-semibold px-3 py-1.5 rounded-full border transition-all">⚫ Cerrado</button>
+          <button data-status-filter="Convertido" class="status-filter-btn text-xs font-semibold px-3 py-1.5 rounded-full border transition-all">🏆 Convertido</button>
           <span id="filter-count" class="ml-auto text-xs text-gray-400"></span>
         </div>
         <!-- Barra de selección (aparece al marcar filas) -->
@@ -493,6 +499,159 @@ const plansJSON = JSON.stringify(PLANS);
         </div>
       </div>
 
+      <!-- ── CLIENTES CONVERTIDOS ── -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-[#1B3D6E]">Clientes convertidos</h2>
+              <p class="text-xs text-gray-400 mt-0.5">Leads que completaron el proceso de venta</p>
+            </div>
+          </div>
+          <span id="clients-count-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-green-50 text-green-700">0 clientes</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+              <tr>
+                <th class="px-5 py-3 text-left font-semibold">#</th>
+                <th class="px-5 py-3 text-left font-semibold">Nombre</th>
+                <th class="px-5 py-3 text-left font-semibold">Email</th>
+                <th class="px-5 py-3 text-left font-semibold">Tipo negocio</th>
+                <th class="px-5 py-3 text-left font-semibold">Plan</th>
+                <th class="px-5 py-3 text-left font-semibold">Fecha conversión</th>
+                <th class="px-5 py-3 text-left font-semibold">Notas</th>
+                <th class="px-5 py-3 text-left font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="clients-tbody" class="divide-y divide-gray-100"></tbody>
+          </table>
+          <div id="clients-empty" class="hidden py-14 text-center">
+            <div class="text-4xl mb-3">🎯</div>
+            <p class="text-gray-500 text-sm font-medium">Aún no hay clientes convertidos</p>
+            <p class="text-gray-400 text-xs mt-1">Cuando cierres una venta, el lead pasará aquí automáticamente.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── INCIDENCIAS ── -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-[#1B3D6E]">Incidencias de contacto</h2>
+              <p class="text-xs text-gray-400 mt-0.5">Intentos fallidos al enviar el formulario de contacto</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="refresh-failures-btn"
+              class="flex items-center gap-1.5 text-xs font-semibold text-gray-600 border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Actualizar
+            </button>
+            <button id="clear-failures-btn"
+              class="flex items-center gap-1.5 text-xs font-semibold text-red-600 border border-red-200 bg-red-50 px-3 py-2 rounded-lg hover:bg-red-100 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              Limpiar
+            </button>
+          </div>
+        </div>
+
+        <!-- Resumen por tipo -->
+        <div id="failures-summary-strip" class="hidden px-6 py-3 bg-red-50/60 border-b border-red-100 flex flex-wrap gap-4 text-xs"></div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+              <tr>
+                <th class="px-5 py-3 text-left font-semibold">#</th>
+                <th class="px-5 py-3 text-left font-semibold">Fecha y hora</th>
+                <th class="px-5 py-3 text-left font-semibold">Tipo de error</th>
+                <th class="px-5 py-3 text-left font-semibold">Nombre</th>
+                <th class="px-5 py-3 text-left font-semibold">Email</th>
+                <th class="px-5 py-3 text-left font-semibold">Código HTTP</th>
+                <th class="px-5 py-3 text-left font-semibold">Detalle</th>
+              </tr>
+            </thead>
+            <tbody id="failures-tbody" class="divide-y divide-gray-100"></tbody>
+          </table>
+          <div id="failures-empty" class="hidden py-14 text-center">
+            <div class="text-4xl mb-3">✅</div>
+            <p class="text-gray-500 text-sm font-medium">Sin incidencias registradas</p>
+            <p class="text-gray-400 text-xs mt-1">Aquí aparecerán los intentos de contacto que fallen.</p>
+          </div>
+        </div>
+        <div class="px-6 py-3 border-t border-gray-100 flex items-center justify-between">
+          <p class="text-xs text-gray-400" id="failures-count-label"></p>
+          <p id="failures-source-label" class="text-xs text-gray-300"></p>
+        </div>
+      </div>
+
+      <!-- ── GESTIÓN DE USUARIOS ── -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-[#1B3D6E]">Gestión de usuarios</h2>
+              <p class="text-xs text-gray-400 mt-0.5">Invita colaboradores y verifica su correo electrónico</p>
+            </div>
+          </div>
+          <button id="new-user-btn"
+            class="flex items-center gap-1.5 text-xs font-bold text-white bg-violet-600 px-4 py-2.5 rounded-xl hover:bg-violet-700 transition-all active:scale-95">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Nuevo usuario
+          </button>
+        </div>
+
+        <!-- Sin Supabase warning -->
+        <div id="users-no-db" class="hidden px-6 py-8 text-center">
+          <div class="text-3xl mb-3">🔌</div>
+          <p class="text-sm font-semibold text-amber-700">Supabase no configurado</p>
+          <p class="text-xs text-gray-400 mt-1">La gestión de usuarios requiere la base de datos activa.</p>
+        </div>
+
+        <!-- Tabla de usuarios -->
+        <div id="users-table-wrap" class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+              <tr>
+                <th class="px-6 py-3 text-left font-semibold">#</th>
+                <th class="px-6 py-3 text-left font-semibold">Nombre</th>
+                <th class="px-6 py-3 text-left font-semibold">Email</th>
+                <th class="px-6 py-3 text-left font-semibold">Rol</th>
+                <th class="px-6 py-3 text-left font-semibold">Estado</th>
+                <th class="px-6 py-3 text-left font-semibold">Invitado</th>
+                <th class="px-6 py-3 text-left font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody" class="divide-y divide-gray-100"></tbody>
+          </table>
+          <div id="users-empty" class="hidden py-14 text-center">
+            <div class="text-4xl mb-3">👥</div>
+            <p class="text-gray-500 text-sm font-medium">Aún no hay usuarios invitados</p>
+            <p class="text-gray-400 text-xs mt-1">Haz clic en "Nuevo usuario" para invitar a un colaborador.</p>
+          </div>
+        </div>
+        <div class="px-6 py-3 border-t border-gray-100">
+          <p class="text-xs text-gray-400" id="users-summary"></p>
+        </div>
+      </div>
+
       <!-- Footer -->
       <div class="text-center py-4">
         <p class="text-xs text-gray-400">Usqay Admin Panel · <span id="data-source-label">localStorage</span></p>
@@ -716,10 +875,241 @@ const plansJSON = JSON.stringify(PLANS);
     </div>
   </div>
 
-  <!-- Toast notification -->
+  <!-- ── MODAL: PERFIL DEL LEAD + LÍNEA DE TIEMPO ─────────── -->
+  <div id="lead-modal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[92vh] flex flex-col shadow-2xl">
+
+      <!-- Header -->
+      <div class="px-6 py-5 border-b border-gray-100 flex items-start justify-between flex-shrink-0">
+        <div class="flex items-center gap-3">
+          <div id="lm-avatar" class="w-12 h-12 rounded-full flex items-center justify-center text-white font-black text-lg flex-shrink-0"></div>
+          <div>
+            <h2 id="lm-nombre" class="text-lg font-black text-[#1B3D6E]"></h2>
+            <p id="lm-meta" class="text-xs text-gray-400 mt-0.5"></p>
+          </div>
+        </div>
+        <button id="lead-modal-close" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all">✕</button>
+      </div>
+
+      <!-- Info rápida -->
+      <div class="px-6 py-4 border-b border-gray-100 grid grid-cols-2 sm:grid-cols-3 gap-3 flex-shrink-0 bg-gray-50/60">
+        <div>
+          <p class="text-xs text-gray-400 mb-0.5">WhatsApp</p>
+          <a id="lm-telefono" href="#" target="_blank" class="text-sm font-semibold text-[#E85C1A] hover:underline"></a>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 mb-0.5">Email</p>
+          <a id="lm-email" href="#" class="text-sm font-semibold text-[#1B3D6E] hover:underline truncate block"></a>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 mb-0.5">Tipo de negocio</p>
+          <p id="lm-negocio" class="text-sm font-semibold text-gray-700 capitalize"></p>
+        </div>
+        <div class="col-span-2 sm:col-span-3">
+          <p class="text-xs text-gray-400 mb-0.5">Mensaje</p>
+          <p id="lm-mensaje" class="text-sm text-gray-600 italic"></p>
+        </div>
+      </div>
+
+      <!-- Scrollable: timeline + form -->
+      <div class="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+
+        <!-- Agregar interacción -->
+        <div class="bg-violet-50 rounded-2xl p-4 border border-violet-100">
+          <p class="text-xs font-bold text-violet-700 uppercase tracking-wider mb-3">Registrar interacción</p>
+          <div class="grid grid-cols-2 gap-2 mb-2">
+            <select id="int-tipo" class="col-span-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
+              <option value="llamada">📞 Llamada</option>
+              <option value="whatsapp">💬 WhatsApp</option>
+              <option value="email">✉️ Email</option>
+              <option value="reunion">🤝 Reunión</option>
+              <option value="nota">📝 Nota</option>
+            </select>
+            <select id="int-resultado" class="col-span-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
+              <option value="">Sin resultado</option>
+              <option value="exitoso">✅ Exitoso</option>
+              <option value="sin_respuesta">📵 Sin respuesta</option>
+              <option value="rechazado">❌ Rechazado</option>
+              <option value="reprogramar">🔁 Reprogramar</option>
+            </select>
+          </div>
+          <textarea id="int-notas" rows="2" placeholder="Notas de la interacción..."
+            class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none mb-2"></textarea>
+          <button id="int-save-btn"
+            class="w-full bg-violet-600 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-violet-700 transition-all active:scale-95">
+            Guardar interacción
+          </button>
+        </div>
+
+        <!-- Línea de tiempo -->
+        <div>
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Línea de tiempo</p>
+          <div id="lm-timeline" class="space-y-3">
+            <div id="lm-timeline-empty" class="text-center py-8 text-gray-400 text-sm">
+              Sin interacciones registradas aún.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer: convertir a cliente -->
+      <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+        <button id="convert-btn"
+          class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-3 rounded-2xl hover:opacity-90 transition-all active:scale-95 text-sm flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Marcar como Cliente Convertido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: CONFIRMAR CONVERSIÓN ──────────────────────────── -->
+  <div id="convert-modal" class="hidden fixed inset-0 z-[60] bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-50 mb-4 text-3xl">🎉</div>
+        <h2 class="text-xl font-black text-gray-900">¡Cliente Convertido!</h2>
+        <p id="cv-desc" class="text-sm text-gray-500 mt-1 leading-relaxed"></p>
+      </div>
+      <div class="space-y-3 mb-5">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Plan contratado</label>
+          <select id="cv-plan" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+            <option value="">Sin especificar</option>
+            <option value="Básico">Básico</option>
+            <option value="Profesional">Profesional</option>
+            <option value="Enterprise">Enterprise</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Notas de conversión</label>
+          <textarea id="cv-notas" rows="2" placeholder="Ej. Cliente firmó contrato anual..."
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"></textarea>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button id="cv-cancel" class="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-all">Cancelar</button>
+        <button id="cv-confirm" class="flex-1 py-3 rounded-xl bg-green-600 text-white text-sm font-bold hover:bg-green-700 transition-all active:scale-95">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: NUEVO USUARIO ─────────────────────────────── -->
+  <div id="new-user-modal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-black text-[#1B3D6E]">Invitar usuario</h2>
+          <p class="text-xs text-gray-400 mt-0.5">Se enviará un enlace de verificación al correo indicado.</p>
+        </div>
+        <button id="new-user-modal-close"
+          class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all">✕</button>
+      </div>
+
+      <form id="new-user-form" class="space-y-4" novalidate>
+        <!-- Nombre -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nombre completo <span class="text-[#E85C1A]">*</span></label>
+          <input type="text" id="nu-nombre" required placeholder="Ej. María Torres"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" />
+          <p id="nu-nombre-err" class="hidden mt-1 text-xs text-red-500"></p>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Correo electrónico <span class="text-[#E85C1A]">*</span></label>
+          <input type="email" id="nu-email" required placeholder="correo@ejemplo.com"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" />
+          <p id="nu-email-err" class="hidden mt-1 text-xs text-red-500"></p>
+        </div>
+
+        <!-- Rol -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Contraseña <span class="text-[#E85C1A]">*</span></label>
+          <input type="password" id="nu-password" required placeholder="Mínimo 6 caracteres"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" />
+          <p id="nu-password-err" class="hidden mt-1 text-xs text-red-500"></p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Rol</label>
+          <select id="nu-rol"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all">
+            <option value="lectura">Solo lectura — puede ver datos</option>
+            <option value="admin">Administrador — acceso completo</option>
+          </select>
+        </div>
+
+        <!-- Mensaje de error general -->
+        <div id="nu-general-err" class="hidden bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600 font-medium"></div>
+
+        <button type="submit" id="nu-submit-btn"
+          class="w-full bg-violet-600 text-white font-bold py-3 rounded-xl hover:bg-violet-700 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Enviar invitación
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── MODAL: ENLACE DE VERIFICACIÓN ────────────────────── -->
+  <div id="verify-link-modal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-green-50 mb-4">
+          <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h2 class="text-xl font-black text-gray-900">¡Invitación creada!</h2>
+        <p id="vl-desc" class="text-sm text-gray-500 mt-1 leading-relaxed"></p>
+      </div>
+
+      <div class="mb-5">
+        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Enlace de verificación</label>
+        <div class="flex gap-2">
+          <input id="vl-link" readonly
+            class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-mono text-gray-700 focus:outline-none" />
+          <button id="vl-copy-btn"
+            class="flex-shrink-0 flex items-center gap-1.5 text-xs font-bold text-white bg-[#1B3D6E] px-4 py-2.5 rounded-xl hover:bg-[#1B3D6E]/90 transition-all active:scale-95">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            Copiar
+          </button>
+        </div>
+        <p class="mt-2 text-xs text-amber-600 bg-amber-50 rounded-xl px-3 py-2 border border-amber-100">
+          ⏰ Este enlace expira en <strong>24 horas</strong>. Envíaselo al usuario por WhatsApp o correo.
+        </p>
+      </div>
+
+      <button id="vl-close-btn"
+        class="w-full border border-gray-200 text-gray-600 font-semibold py-3 rounded-xl hover:bg-gray-50 transition-all text-sm">
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast: guardado / acciones generales -->
   <div id="save-toast" class="hidden fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-green-600 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
     <span id="toast-msg">Cambios guardados correctamente</span>
+  </div>
+
+  <!-- Toast: nuevo lead recibido -->
+  <div id="lead-toast" class="hidden fixed top-6 right-6 z-50 max-w-sm w-full">
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-2xl p-4 flex items-start gap-3">
+      <div class="w-10 h-10 rounded-xl bg-[#E85C1A] flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-bold text-[#1B3D6E]">¡Nuevo lead recibido!</p>
+        <p id="lead-toast-detail" class="text-xs text-gray-500 mt-0.5 truncate"></p>
+      </div>
+      <button id="lead-toast-close" class="text-gray-300 hover:text-gray-500 transition-colors flex-shrink-0 mt-0.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
   </div>
 
 </body>
@@ -765,11 +1155,41 @@ const plansJSON = JSON.stringify(PLANS);
 
 <script>
   import {
-    isSupabaseConfigured,
+    supabase, isSupabaseConfigured,
     fetchVisits, fetchVisitsToday,
     fetchSubmissions, updateSubmissionStatus, deleteSubmission,
     clearVisits, clearSubmissions,
+    fetchAdminUsers, createAdminUser, deleteAdminUser,
+    fetchFailures, clearFailures,
+    fetchInteractions, insertInteraction, deleteInteraction,
+    fetchClients, convertLeadToClient, deleteClient,
   } from '@/lib/supabase';
+
+  import emailjs from '@emailjs/browser';
+
+  const EMAILJS_SERVICE_ID  = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID  ?? '';
+  const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? '';
+  const EMAILJS_PUBLIC_KEY  = import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY  ?? '';
+  const emailjsReady = Boolean(EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY
+    && !EMAILJS_SERVICE_ID.includes('tu_'));
+
+  if (emailjsReady) emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  async function sendInvitationEmail(nombre: string, email: string, verifyLink: string): Promise<{ ok: boolean; error?: string }> {
+    if (!emailjsReady) return { ok: false, error: 'EmailJS no configurado' };
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_name:     nombre,
+        to_email:    email,
+        verify_link: verifyLink,
+        site_name:   'Usqay Admin',
+        expiry:      '24 horas',
+      });
+      return { ok: true };
+    } catch (err: any) {
+      return { ok: false, error: err?.text ?? err?.message ?? 'Error desconocido' };
+    }
+  }
 
   // ── Types ─────────────────────────────────────────────────
   interface Feature  { label: string; included: boolean; }
@@ -778,6 +1198,12 @@ const plansJSON = JSON.stringify(PLANS);
   // ── Constants ─────────────────────────────────────────────
   const ADMIN_PASSWORD  = 'usqay2026x1';
   const SESSION_KEY     = 'usqay_admin_session';
+
+  async function hashPassword(pw: string): Promise<string> {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  const ROLE_KEY        = 'usqay_admin_role'; // 'admin' | 'lectura'
   const VISITS_KEY      = 'usqay_visits_total';
   const VISITS_DAY_KEY  = 'usqay_visits_day';
   const SUBS_KEY        = 'usqay_submissions';
@@ -845,6 +1271,113 @@ const plansJSON = JSON.stringify(PLANS);
   const exportBtn    = document.getElementById('export-btn')!;
 
   // ── Login ─────────────────────────────────────────────────
+  // ── Notificación de nuevo lead ────────────────────────────
+  let leadToastTimer: ReturnType<typeof setTimeout> | null = null;
+  let lastLeadTs = localStorage.getItem('usqay_last_lead_ts') ?? '0';
+
+  function showLeadToast(nombre?: string, tipo?: string) {
+    const toast    = document.getElementById('lead-toast')!;
+    const detail   = document.getElementById('lead-toast-detail')!;
+    const closeBtn = document.getElementById('lead-toast-close')!;
+
+    const tipoLabel = tipo ? ` · ${tipo}` : '';
+    detail.textContent = nombre ? `${nombre}${tipoLabel}` : 'Un cliente completó el formulario';
+
+    toast.classList.remove('hidden');
+    // Auto-cierre a los 8 segundos
+    if (leadToastTimer) clearTimeout(leadToastTimer);
+    leadToastTimer = setTimeout(() => toast.classList.add('hidden'), 8000);
+
+    closeBtn.onclick = () => {
+      toast.classList.add('hidden');
+      if (leadToastTimer) clearTimeout(leadToastTimer);
+    };
+
+    // Recargar tabla y métricas
+    loadMetrics();
+    if (dbLeadsCache.length > 0) {
+      // Si hay DB, re-sincronizar
+      document.getElementById('sync-db-btn')?.click();
+    } else {
+      renderTable(searchInput?.value ?? '');
+    }
+  }
+
+  function initLeadNotifications() {
+    // 1. BroadcastChannel — recibe notificación cuando otra pestaña envía el formulario
+    try {
+      const bc = new BroadcastChannel('usqay_leads');
+      bc.onmessage = (ev) => {
+        if (ev.data?.type === 'new_lead') {
+          showLeadToast(ev.data.nombre, ev.data.tipo);
+        }
+      };
+    } catch { /* no disponible */ }
+
+    // 2. Polling de localStorage — detecta envíos desde la misma pestaña o si BroadcastChannel falla
+    setInterval(() => {
+      const ts = localStorage.getItem('usqay_last_lead_ts') ?? '0';
+      if (ts !== lastLeadTs && ts !== '0') {
+        lastLeadTs = ts;
+        const subs = getSubmissions();
+        const last = subs[subs.length - 1];
+        showLeadToast(last?.nombre, last?.tipo_negocio);
+      }
+    }, 2000);
+  }
+
+  // ── Control de acceso por rol ──────────────────────────────────
+  function getCurrentRole(): 'admin' | 'lectura' {
+    return (sessionStorage.getItem(ROLE_KEY) ?? 'lectura') as 'admin' | 'lectura';
+  }
+
+  function applyRoleRestrictions() {
+    const role   = getCurrentRole();
+    const isAdmin = role === 'admin';
+
+    // IDs que solo el rol admin puede usar
+    const adminOnlyIds = [
+      'save-plans-btn', 'add-plan-btn', 'reset-plans-btn', 'download-config-btn',
+      'apply-discount-btn', 'apply-monthly-discount-btn',
+      'export-btn', 'delete-selected-btn',
+      'clear-visits-db-btn', 'clear-leads-db-btn', 'clear-all-db-btn',
+      'clear-failures-btn',
+      'new-user-btn',
+      'convert-btn',
+      'int-save-btn',
+    ];
+
+    adminOnlyIds.forEach(id => {
+      const el = document.getElementById(id) as HTMLButtonElement | null;
+      if (!el) return;
+      if (!isAdmin) {
+        el.disabled = true;
+        el.title    = 'Acción restringida al rol Administrador';
+        el.classList.add('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+      } else {
+        el.disabled = false;
+        el.title    = '';
+        el.classList.remove('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+      }
+    });
+
+    // Ocultar selectores de estado en modo lectura
+    document.querySelectorAll<HTMLSelectElement>('.status-select, .status-select-db').forEach(sel => {
+      sel.disabled = !isAdmin;
+      if (!isAdmin) sel.style.pointerEvents = 'none';
+    });
+
+    // Mostrar badge de rol en la topbar
+    const badge = document.getElementById('db-status-badge');
+    if (badge && !isAdmin) {
+      const rolBadge = document.createElement('span');
+      rolBadge.id        = 'role-badge';
+      rolBadge.textContent = '👁 Solo lectura';
+      rolBadge.className = 'ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700';
+      badge.insertAdjacentElement('afterend', rolBadge);
+    }
+  }
+
   function showDashboard() {
     loginOverlay.classList.add('hidden');
     dashboard.classList.remove('hidden');
@@ -852,6 +1385,11 @@ const plansJSON = JSON.stringify(PLANS);
     renderTable('');
     renderPlanEditor();
     initBackendSection();
+    initLeadNotifications();
+    applyRoleRestrictions();
+    loadClients();
+    loadFailures();
+    loadUsers();
     const el = document.getElementById('current-date');
     if (el) el.textContent = new Date().toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   }
@@ -961,18 +1499,43 @@ const plansJSON = JSON.stringify(PLANS);
 
   if (sessionStorage.getItem(SESSION_KEY) === '1') showDashboard();
 
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isLockedOut()) { applyLockoutUI(); return; }
 
+    const emailVal   = (document.getElementById('admin-email')    as HTMLInputElement).value.trim().toLowerCase();
     const pw         = (document.getElementById('admin-password') as HTMLInputElement).value;
     const errorEl    = document.getElementById('login-error')!;
     const attemptsEl = document.getElementById('login-attempts-left')!;
 
+    // Intentar login: primero contraseña maestra, luego usuario de BD
+    let loginOk = false;
+    let loginRol: 'admin' | 'lectura' = 'admin';
+
     if (pw === ADMIN_PASSWORD) {
+      loginOk = true;
+      loginRol = 'admin';
+    } else if (emailVal && supabase) {
+      // Buscar usuario por email y verificar contraseña
+      const hash = await hashPassword(pw);
+      const { data } = await supabase
+        .from('admin_users')
+        .select('id, rol, verificado, password_hash')
+        .eq('email', emailVal)
+        .single();
+      if (data && data.password_hash === hash && data.verificado) {
+        loginOk = true;
+        loginRol = data.rol as 'admin' | 'lectura';
+        // Actualizar ultimo_acceso
+        await supabase.from('admin_users').update({ ultimo_acceso: new Date().toISOString() }).eq('id', data.id);
+      }
+    }
+
+    if (loginOk) {
       // Login exitoso → limpiar contadores
       localStorage.removeItem(ATTEMPTS_KEY);
       sessionStorage.setItem(SESSION_KEY, '1');
+      sessionStorage.setItem(ROLE_KEY, loginRol);
       errorEl.classList.add('hidden');
       attemptsEl.classList.add('hidden');
       showDashboard();
@@ -998,6 +1561,7 @@ const plansJSON = JSON.stringify(PLANS);
 
   logoutBtn.addEventListener('click', () => {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(ROLE_KEY);
     loginOverlay.classList.remove('hidden');
     dashboard.classList.add('hidden');
     (document.getElementById('admin-password') as HTMLInputElement).value = '';
@@ -1096,6 +1660,7 @@ const plansJSON = JSON.stringify(PLANS);
               <option value="Contactado"     ${estado==='Contactado'?'selected':''}>🔵 Contactado</option>
               <option value="En seguimiento" ${estado==='En seguimiento'?'selected':''}>🟠 En seguimiento</option>
               <option value="Cerrado"        ${estado==='Cerrado'?'selected':''}>⚫ Cerrado</option>
+              <option value="Convertido"     ${estado==='Convertido'?'selected':''}>🏆 Convertido</option>
             </select>
           </td>
         </tr>`;
@@ -1145,6 +1710,7 @@ const plansJSON = JSON.stringify(PLANS);
       'Contactado':     'background:#dbeafe;color:#1d4ed8;',
       'En seguimiento': 'background:#ffedd5;color:#c2410c;',
       'Cerrado':        'background:#f3f4f6;color:#374151;',
+      'Convertido':     'background:#fef9c3;color:#854d0e;',
     };
     return map[estado] ?? map['Nuevo'];
   }
@@ -1246,18 +1812,47 @@ const plansJSON = JSON.stringify(PLANS);
     else renderTable(searchInput?.value ?? '');
   });
 
-  // Status change via event delegation
+  // Status change via event delegation (localStorage leads)
   document.getElementById('submissions-tbody')!.addEventListener('change', (e) => {
     const sel = e.target as HTMLSelectElement;
     if (!sel.classList.contains('status-select')) return;
-    const idx = Number(sel.dataset.realIdx);
-    const subs = getSubmissions();
+    const idx   = Number(sel.dataset.realIdx);
+    const subs  = getSubmissions();
     if (!subs[idx]) return;
+    const prev  = subs[idx].estado ?? 'Nuevo';
+    const lead  = subs[idx];
+
+    if (sel.value === 'Convertido') {
+      // Abrir modal de conversión; revertir si cancela
+      currentLeadEmail  = lead.email;
+      currentLeadNombre = lead.nombre;
+      currentLeadData   = { ...lead, fecha: lead.fecha };
+      const desc = document.getElementById('cv-desc')!;
+      desc.textContent = `Se moverá a "${lead.nombre}" (${lead.email}) a la lista de clientes convertidos.`;
+      document.getElementById('convert-modal')!.classList.remove('hidden');
+
+      // Si el usuario cancela, revertir el select
+      const cancelBtn  = document.getElementById('cv-cancel')!;
+      const confirmBtn = document.getElementById('cv-confirm')!;
+      const onCancel   = () => { sel.value = prev; sel.setAttribute('style', statusCSS(prev)); cleanup(); };
+      const onConfirm  = () => {
+        subs[idx].estado = 'Convertido';
+        localStorage.setItem(SUBS_KEY, JSON.stringify(subs));
+        cleanup();
+      };
+      function cleanup() {
+        cancelBtn.removeEventListener('click', onCancel);
+        confirmBtn.removeEventListener('click', onConfirm);
+      }
+      cancelBtn.addEventListener('click', onCancel,  { once: true });
+      confirmBtn.addEventListener('click', onConfirm, { once: true });
+      return;
+    }
+
     subs[idx].estado = sel.value;
     localStorage.setItem(SUBS_KEY, JSON.stringify(subs));
     sel.setAttribute('style', statusCSS(sel.value));
 
-    // Animar la fila antes de re-renderizar para que desaparezca suavemente
     const row = sel.closest('tr') as HTMLElement | null;
     if (row) {
       row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
@@ -1923,6 +2518,7 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
               <option value="Contactado"     ${estado==='Contactado'?'selected':''}>🔵 Contactado</option>
               <option value="En seguimiento" ${estado==='En seguimiento'?'selected':''}>🟠 En seguimiento</option>
               <option value="Cerrado"        ${estado==='Cerrado'?'selected':''}>⚫ Cerrado</option>
+              <option value="Convertido"     ${estado==='Convertido'?'selected':''}>🏆 Convertido</option>
             </select>
           </td>
         </tr>`;
@@ -1934,11 +2530,41 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
     // Status change via DB
     tbody.querySelectorAll('.status-select-db').forEach(sel => {
       sel.addEventListener('change', async () => {
-        const s = sel as HTMLSelectElement;
-        const id = s.dataset.dbId ?? '';
-        s.setAttribute('style', statusCSS(s.value));
+        const s    = sel as HTMLSelectElement;
+        const id   = s.dataset.dbId ?? '';
+        const prev = dbLeadsCache.find((l: any) => l._db_id === id)?.estado ?? 'Nuevo';
 
-        // Actualizar en el cache local y re-renderizar con animación
+        if (s.value === 'Convertido') {
+          // Buscar datos completos del lead en cache
+          const lead = dbLeadsCache.find((l: any) => l._db_id === id);
+          currentLeadEmail  = lead?.email ?? '';
+          currentLeadNombre = lead?.nombre ?? '';
+          currentLeadData   = lead ? { ...lead } : {};
+
+          const desc = document.getElementById('cv-desc')!;
+          desc.textContent = `Se moverá a "${currentLeadNombre}" (${currentLeadEmail}) a la lista de clientes convertidos.`;
+          document.getElementById('convert-modal')!.classList.remove('hidden');
+
+          const cancelBtn  = document.getElementById('cv-cancel')!;
+          const confirmBtn = document.getElementById('cv-confirm')!;
+          const onCancel   = () => { s.value = prev; s.setAttribute('style', statusCSS(prev)); cleanup(); };
+          const onConfirm  = async () => {
+            // Actualizar estado en DB
+            await updateSubmissionStatus(id, 'Convertido');
+            const cached = dbLeadsCache.find((l: any) => l._db_id === id);
+            if (cached) cached.estado = 'Convertido';
+            cleanup();
+          };
+          function cleanup() {
+            cancelBtn.removeEventListener('click', onCancel);
+            confirmBtn.removeEventListener('click', onConfirm);
+          }
+          cancelBtn.addEventListener('click',  onCancel,   { once: true });
+          confirmBtn.addEventListener('click', onConfirm,  { once: true });
+          return;
+        }
+
+        s.setAttribute('style', statusCSS(s.value));
         const cached = dbLeadsCache.find((l: any) => l._db_id === id);
         if (cached) cached.estado = s.value;
 
@@ -2351,4 +2977,579 @@ ${p.features.map(f => `      { label: '${f.label.replace(/'/g,"\\'")}', included
         </div>`;
     }).join('');
   }
+
+  // ══════════════════════════════════════════════════════════════
+  // ── MODAL PERFIL DE LEAD + BITÁCORA ──────────────────────────
+  // ══════════════════════════════════════════════════════════════
+
+  const TIPO_ICON: Record<string,string> = {
+    llamada:  '📞', whatsapp: '💬', email: '✉️', reunion: '🤝', nota: '📝',
+  };
+  const RESULTADO_STYLE: Record<string,string> = {
+    exitoso:       'background:#dcfce7;color:#15803d;',
+    sin_respuesta: 'background:#fef3c7;color:#92400e;',
+    rechazado:     'background:#fee2e2;color:#b91c1c;',
+    reprogramar:   'background:#ede9fe;color:#6d28d9;',
+  };
+  const RESULTADO_LABEL: Record<string,string> = {
+    exitoso: 'Exitoso', sin_respuesta: 'Sin respuesta', rechazado: 'Rechazado', reprogramar: 'Reprogramar',
+  };
+  const AVATAR_COLORS = ['#1B3D6E','#E85C1A','#16a34a','#7c3aed','#0891b2','#be185d'];
+
+  let currentLeadEmail = '';
+  let currentLeadNombre = '';
+  let currentLeadData: any = null;
+
+  async function openLeadModal(lead: any) {
+    currentLeadEmail  = lead.email ?? '';
+    currentLeadNombre = lead.nombre ?? '';
+    currentLeadData   = lead;
+
+    const modal = document.getElementById('lead-modal')!;
+    const color = AVATAR_COLORS[Math.abs([...currentLeadEmail].reduce((a,c) => a + c.charCodeAt(0), 0)) % AVATAR_COLORS.length];
+
+    (document.getElementById('lm-avatar') as HTMLElement).style.background = color;
+    (document.getElementById('lm-avatar') as HTMLElement).textContent = (currentLeadNombre[0] ?? '?').toUpperCase();
+    setText('lm-nombre', currentLeadNombre);
+    setText('lm-meta', `${TIPO_LABELS[lead.tipo_negocio ?? ''] ?? lead.tipo_negocio ?? '—'} · ${fmtDate(lead.fecha ?? lead.created_at ?? '')}`);
+
+    const telEl = document.getElementById('lm-telefono') as HTMLAnchorElement;
+    telEl.textContent = lead.telefono ?? '—';
+    telEl.href = `https://wa.me/${(lead.telefono ?? '').replace(/\D/g,'')}`;
+
+    const emailEl = document.getElementById('lm-email') as HTMLAnchorElement;
+    emailEl.textContent = lead.email ?? '—';
+    emailEl.href = `mailto:${lead.email}`;
+
+    setText('lm-negocio', TIPO_LABELS[lead.tipo_negocio ?? ''] ?? lead.tipo_negocio ?? '—');
+    setText('lm-mensaje', lead.mensaje || '—');
+
+    modal.classList.remove('hidden');
+    await refreshTimeline();
+  }
+
+  async function refreshTimeline() {
+    const container = document.getElementById('lm-timeline')!;
+    const emptyEl   = document.getElementById('lm-timeline-empty')!;
+
+    if (!isSupabaseConfigured) {
+      emptyEl.classList.remove('hidden');
+      emptyEl.textContent = 'Se requiere Supabase para registrar interacciones.';
+      return;
+    }
+
+    const items = await fetchInteractions(currentLeadEmail);
+
+    if (!items.length) {
+      container.innerHTML = '';
+      container.appendChild(emptyEl);
+      emptyEl.classList.remove('hidden');
+      return;
+    }
+    emptyEl.classList.add('hidden');
+
+    container.innerHTML = items.map(it => {
+      const icon   = TIPO_ICON[it.tipo] ?? '📌';
+      const rStyle = it.resultado ? (RESULTADO_STYLE[it.resultado] ?? '') : '';
+      const rLabel = it.resultado ? (RESULTADO_LABEL[it.resultado] ?? it.resultado) : '';
+      return `
+      <div class="flex gap-3 group">
+        <div class="flex flex-col items-center">
+          <div class="w-9 h-9 rounded-full bg-violet-50 border-2 border-violet-200 flex items-center justify-center text-base flex-shrink-0">${icon}</div>
+          <div class="flex-1 w-0.5 bg-gray-100 my-1 group-last:hidden"></div>
+        </div>
+        <div class="flex-1 pb-4">
+          <div class="flex items-center gap-2 flex-wrap mb-1">
+            <span class="text-sm font-bold text-gray-800 capitalize">${esc(it.tipo)}</span>
+            ${rLabel ? `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="${rStyle}">${esc(rLabel)}</span>` : ''}
+            <span class="text-xs text-gray-400 ml-auto">${fmtDate(it.fecha_interaccion ?? it.created_at ?? '')}</span>
+            <button class="delete-int-btn text-gray-300 hover:text-red-400 transition-colors text-xs" data-int-id="${esc(it.id ?? '')}">✕</button>
+          </div>
+          ${it.notas ? `<p class="text-sm text-gray-600 bg-gray-50 rounded-xl px-3 py-2 border border-gray-100">${esc(it.notas)}</p>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+
+    // Bind delete buttons
+    container.querySelectorAll<HTMLButtonElement>('.delete-int-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.intId!;
+        await deleteInteraction(id);
+        refreshTimeline();
+      });
+    });
+  }
+
+  document.getElementById('lead-modal-close')!.addEventListener('click', () => {
+    document.getElementById('lead-modal')!.classList.add('hidden');
+  });
+
+  document.getElementById('int-save-btn')!.addEventListener('click', async () => {
+    const tipo      = (document.getElementById('int-tipo')      as HTMLSelectElement).value as any;
+    const resultado = (document.getElementById('int-resultado') as HTMLSelectElement).value as any;
+    const notas     = (document.getElementById('int-notas')     as HTMLTextAreaElement).value.trim();
+    const btn       = document.getElementById('int-save-btn') as HTMLButtonElement;
+
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+
+    const { error } = await insertInteraction({
+      submission_email:   currentLeadEmail,
+      tipo,
+      resultado:          resultado || undefined,
+      notas:              notas || undefined,
+      fecha_interaccion:  new Date().toISOString(),
+      creado_por:         'admin',
+    });
+
+    btn.disabled = false;
+    btn.textContent = 'Guardar interacción';
+
+    if (error) { showToast('Error: ' + error); return; }
+
+    (document.getElementById('int-notas') as HTMLTextAreaElement).value = '';
+    (document.getElementById('int-resultado') as HTMLSelectElement).value = '';
+    await refreshTimeline();
+    showToast('Interacción registrada');
+  });
+
+  // ── Conversión a cliente ──────────────────────────────────────
+  document.getElementById('convert-btn')!.addEventListener('click', () => {
+    const desc = document.getElementById('cv-desc')!;
+    desc.textContent = `Se moverá a "${currentLeadNombre}" (${currentLeadEmail}) a la lista de clientes convertidos.`;
+    document.getElementById('convert-modal')!.classList.remove('hidden');
+  });
+
+  document.getElementById('cv-cancel')!.addEventListener('click', () => {
+    document.getElementById('convert-modal')!.classList.add('hidden');
+  });
+
+  document.getElementById('cv-confirm')!.addEventListener('click', async () => {
+    const plan  = (document.getElementById('cv-plan')  as HTMLSelectElement).value;
+    const notas = (document.getElementById('cv-notas') as HTMLTextAreaElement).value.trim();
+    const btn   = document.getElementById('cv-confirm') as HTMLButtonElement;
+
+    btn.disabled = true;
+    btn.textContent = 'Convirtiendo...';
+
+    // 1. Guardar en tabla clients
+    const { error } = await convertLeadToClient({
+      nombre:           currentLeadNombre,
+      email:            currentLeadEmail,
+      telefono:         currentLeadData?.telefono,
+      tipo_negocio:     currentLeadData?.tipo_negocio,
+      plan_contratado:  plan || undefined,
+      fecha_conversion: new Date().toISOString(),
+      notas_conversion: notas || undefined,
+    });
+
+    // 2. Actualizar estado del lead a "Convertido" en Supabase
+    if (currentLeadData?._db_id && isSupabaseConfigured) {
+      await updateSubmissionStatus(currentLeadData._db_id, 'Convertido');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Confirmar';
+    document.getElementById('convert-modal')!.classList.add('hidden');
+    document.getElementById('lead-modal')!.classList.add('hidden');
+
+    if (error) { showToast('Error al convertir: ' + error); return; }
+
+    showToast('🏆 ¡Lead convertido a cliente!');
+    loadClients();
+    loadMetrics();
+    if (dbLeadsCache.length > 0) renderTableFromDB(dbLeadsCache);
+    else renderTable(searchInput?.value ?? '');
+  });
+
+  // Abrir modal al hacer clic en una fila de la tabla
+  document.getElementById('submissions-tbody')!.addEventListener('click', (e) => {
+    const row = (e.target as HTMLElement).closest('tr');
+    if (!row) return;
+    // No abrir si se hizo clic en el checkbox o en el select de estado
+    if ((e.target as HTMLElement).closest('input[type="checkbox"], select')) return;
+
+    const cells = row.querySelectorAll('td');
+    if (cells.length < 8) return;
+
+    const lead = {
+      nombre:       cells[2]?.textContent?.trim() ?? '',
+      telefono:     cells[3]?.textContent?.trim() ?? '',
+      email:        cells[4]?.textContent?.trim() ?? '',
+      tipo_negocio: '',
+      mensaje:      cells[6]?.textContent?.trim() ?? '',
+      fecha:        '',
+      _db_id:       row.querySelector<HTMLSelectElement>('.status-select')?.dataset.realIdx ?? '',
+    };
+
+    // Buscar en cache de DB para obtener más datos
+    if (dbLeadsCache.length > 0) {
+      const full = dbLeadsCache.find((l: any) => l.email === lead.email);
+      if (full) {
+        lead.tipo_negocio = full.tipo_negocio ?? '';
+        lead.fecha        = full.created_at ?? '';
+        lead._db_id       = full._db_id ?? full.id ?? '';
+        lead.mensaje      = full.mensaje ?? '';
+      }
+    } else {
+      const full = getSubmissions().find(s => s.email === lead.email);
+      if (full) {
+        lead.tipo_negocio = full.tipo_negocio ?? '';
+        lead.fecha        = full.fecha ?? '';
+        lead.mensaje      = full.mensaje ?? '';
+      }
+    }
+    openLeadModal(lead);
+  });
+
+  // ── Clientes convertidos ──────────────────────────────────────
+  async function loadClients() {
+    const tbody   = document.getElementById('clients-tbody')!;
+    const empty   = document.getElementById('clients-empty')!;
+    const badge   = document.getElementById('clients-count-badge')!;
+
+    if (!isSupabaseConfigured) {
+      empty.classList.remove('hidden');
+      empty.querySelector('p')!.textContent = 'Se requiere Supabase para ver clientes.';
+      return;
+    }
+
+    const clients = await fetchClients();
+    badge.textContent = `${clients.length} cliente${clients.length !== 1 ? 's' : ''}`;
+
+    if (!clients.length) { tbody.innerHTML = ''; empty.classList.remove('hidden'); return; }
+    empty.classList.add('hidden');
+
+    tbody.innerHTML = clients.map((c, i) => `
+      <tr class="hover:bg-green-50/30 transition-colors">
+        <td class="px-5 py-4 text-gray-400 text-xs font-mono">${i + 1}</td>
+        <td class="px-5 py-4 font-semibold text-gray-900">${esc(c.nombre)}</td>
+        <td class="px-5 py-4 text-sm text-gray-600">${esc(c.email)}</td>
+        <td class="px-5 py-4 text-sm text-gray-600 capitalize">${esc(c.tipo_negocio ?? '—')}</td>
+        <td class="px-5 py-4">
+          ${c.plan_contratado
+            ? `<span class="text-xs font-bold px-2.5 py-1 rounded-full bg-green-50 text-green-700">${esc(c.plan_contratado)}</span>`
+            : '<span class="text-xs text-gray-400">—</span>'}
+        </td>
+        <td class="px-5 py-4 text-xs text-gray-500 whitespace-nowrap">${fmtDate(c.fecha_conversion ?? c.created_at ?? '')}</td>
+        <td class="px-5 py-4 text-xs text-gray-500 max-w-[160px] truncate">${esc(c.notas_conversion ?? '—')}</td>
+        <td class="px-5 py-4">
+          <button class="delete-client-btn text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition-all"
+            data-client-id="${esc(c.id ?? '')}" data-client-name="${esc(c.nombre)}">
+            Eliminar
+          </button>
+        </td>
+      </tr>`).join('');
+
+    document.querySelectorAll<HTMLButtonElement>('.delete-client-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm(`¿Eliminar al cliente "${btn.dataset.clientName}"?`)) return;
+        await deleteClient(btn.dataset.clientId!);
+        showToast('Cliente eliminado');
+        loadClients();
+      });
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // ── INCIDENCIAS DE CONTACTO ───────────────────────────────────
+  // ══════════════════════════════════════════════════════════════
+
+  interface Failure {
+    id?: string; fecha?: string; nombre?: string; email?: string;
+    telefono?: string; tipo_negocio?: string; tipo_error: string;
+    detalle?: string; status_code?: number; user_agent?: string;
+    url_origen?: string; created_at?: string;
+  }
+
+  function getLocalFailures(): Failure[] {
+    try { return JSON.parse(localStorage.getItem('usqay_failures') ?? '[]'); } catch { return []; }
+  }
+
+  const TIPO_ERROR_LABEL: Record<string, string> = {
+    servidor:    'Error servidor',
+    red:         'Error de red',
+    supabase:    'Error base de datos',
+    desconocido: 'Desconocido',
+  };
+  const TIPO_ERROR_STYLE: Record<string, string> = {
+    servidor:    'background:#fee2e2;color:#b91c1c;',
+    red:         'background:#fef3c7;color:#92400e;',
+    supabase:    'background:#ede9fe;color:#6d28d9;',
+    desconocido: 'background:#f3f4f6;color:#374151;',
+  };
+
+  async function loadFailures() {
+    const tbody      = document.getElementById('failures-tbody')!;
+    const empty      = document.getElementById('failures-empty')!;
+    const countLabel = document.getElementById('failures-count-label')!;
+    const srcLabel   = document.getElementById('failures-source-label')!;
+    const strip      = document.getElementById('failures-summary-strip')!;
+
+    let list: Failure[] = [];
+    let source = 'localStorage';
+
+    if (isSupabaseConfigured) {
+      list   = await fetchFailures(200);
+      source = 'Supabase DB';
+      // Complementar con registros locales que puedan no haber llegado a la DB
+      const local = getLocalFailures();
+      const dbIds = new Set(list.map(f => f.fecha));
+      local.forEach(lf => { if (!dbIds.has(lf.fecha)) list.push(lf); });
+      list.sort((a, b) => (b.created_at ?? b.fecha ?? '').localeCompare(a.created_at ?? a.fecha ?? ''));
+    } else {
+      list   = getLocalFailures().slice().reverse();
+      source = 'localStorage (sin DB)';
+    }
+
+    srcLabel.textContent   = `Fuente: ${source}`;
+    countLabel.textContent = `${list.length} incidencia${list.length !== 1 ? 's' : ''}`;
+
+    // Resumen por tipo
+    if (list.length > 0) {
+      const counts: Record<string, number> = {};
+      list.forEach(f => { counts[f.tipo_error] = (counts[f.tipo_error] ?? 0) + 1; });
+      strip.classList.remove('hidden');
+      strip.innerHTML = Object.entries(counts).map(([tipo, n]) =>
+        `<span class="font-semibold text-red-700">${TIPO_ERROR_LABEL[tipo] ?? tipo}: <strong>${n}</strong></span>`
+      ).join('<span class="text-red-300">·</span>');
+    } else {
+      strip.classList.add('hidden');
+    }
+
+    if (!list.length) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+
+    tbody.innerHTML = list.map((f, i) => {
+      const tipoStyle = TIPO_ERROR_STYLE[f.tipo_error] ?? TIPO_ERROR_STYLE.desconocido;
+      const tipoLabel = TIPO_ERROR_LABEL[f.tipo_error] ?? f.tipo_error;
+      const fechaStr  = fmtDate(f.created_at ?? f.fecha ?? '');
+      const detalle   = (f.detalle ?? '—').slice(0, 120);
+      return `
+      <tr class="hover:bg-red-50/30 transition-colors">
+        <td class="px-5 py-3 text-gray-400 text-xs font-mono">${i + 1}</td>
+        <td class="px-5 py-3 text-xs text-gray-600 whitespace-nowrap">${fechaStr}</td>
+        <td class="px-5 py-3">
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full" style="${tipoStyle}">${esc(tipoLabel)}</span>
+        </td>
+        <td class="px-5 py-3 text-sm text-gray-700">${esc(f.nombre ?? '—')}</td>
+        <td class="px-5 py-3 text-xs text-gray-500">${esc(f.email ?? '—')}</td>
+        <td class="px-5 py-3 text-xs font-mono ${f.status_code ? 'text-red-600 font-bold' : 'text-gray-400'}">${f.status_code ?? '—'}</td>
+        <td class="px-5 py-3 text-xs text-gray-500 max-w-xs truncate" title="${esc(f.detalle ?? '')}">${esc(detalle)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('refresh-failures-btn')!.addEventListener('click', loadFailures);
+
+  document.getElementById('clear-failures-btn')!.addEventListener('click', async () => {
+    if (!confirm('¿Limpiar todas las incidencias? Esta acción es irreversible.')) return;
+    localStorage.removeItem('usqay_failures');
+    if (isSupabaseConfigured) {
+      const { error } = await clearFailures();
+      if (error) { showToast('Error al limpiar: ' + error); return; }
+    }
+    showToast('Incidencias eliminadas');
+    loadFailures();
+  });
+
+  // ══════════════════════════════════════════════════════════════
+  // ── GESTIÓN DE USUARIOS ───────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════
+
+  async function loadUsers() {
+    const wrap    = document.getElementById('users-table-wrap')!;
+    const noDb    = document.getElementById('users-no-db')!;
+    const tbody   = document.getElementById('users-tbody')!;
+    const empty   = document.getElementById('users-empty')!;
+    const summary = document.getElementById('users-summary')!;
+
+    if (!isSupabaseConfigured) {
+      wrap.classList.add('hidden');
+      noDb.classList.remove('hidden');
+      return;
+    }
+
+    const users = await fetchAdminUsers();
+    summary.textContent = `${users.length} usuario${users.length !== 1 ? 's' : ''}`;
+
+    if (!users.length) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+
+    const rolLabel: Record<string, string> = { admin: 'Administrador', lectura: 'Solo lectura' };
+    const rolStyle: Record<string, string> = {
+      admin:    'background:#ede9fe;color:#7c3aed;',
+      lectura:  'background:#f0f9ff;color:#0369a1;',
+    };
+
+    tbody.innerHTML = users.map((u, i) => {
+      const verBadge = u.verificado
+        ? '<span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-green-50 text-green-700">✓ Verificado</span>'
+        : '<span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700">⏳ Pendiente</span>';
+      const initial = (u.nombre || '?').charAt(0).toUpperCase();
+      return `
+      <tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-6 py-4 text-gray-400 text-xs font-mono">${i + 1}</td>
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-xs font-bold flex-shrink-0">${esc(initial)}</div>
+            <span class="font-semibold text-gray-900 text-sm">${esc(u.nombre)}</span>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-gray-600 text-sm">${esc(u.email)}</td>
+        <td class="px-6 py-4">
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full" style="${rolStyle[u.rol] ?? rolStyle.lectura}">${rolLabel[u.rol] ?? u.rol}</span>
+        </td>
+        <td class="px-6 py-4">${verBadge}</td>
+        <td class="px-6 py-4 text-gray-400 text-xs">${fmtDate(u.created_at ?? '')}</td>
+        <td class="px-6 py-4">
+          <button class="delete-user-btn text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition-all"
+            data-user-id="${esc(u.id ?? '')}" data-user-name="${esc(u.nombre)}">
+            Eliminar
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    // Bind delete buttons
+    document.querySelectorAll<HTMLButtonElement>('.delete-user-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id   = btn.dataset.userId!;
+        const name = btn.dataset.userName!;
+        if (!confirm(`¿Eliminar al usuario "${name}"? Esta acción es irreversible.`)) return;
+        const { error } = await deleteAdminUser(id);
+        if (error) { showToast('Error al eliminar: ' + error); return; }
+        showToast('Usuario eliminado');
+        loadUsers();
+      });
+    });
+  }
+
+  // ── Modal nuevo usuario ───────────────────────────────────────
+  const newUserModal   = document.getElementById('new-user-modal')!;
+  const newUserForm    = document.getElementById('new-user-form') as HTMLFormElement;
+  const nuSubmitBtn    = document.getElementById('nu-submit-btn') as HTMLButtonElement;
+
+  document.getElementById('new-user-btn')!.addEventListener('click', () => {
+    newUserForm.reset();
+    document.getElementById('nu-nombre-err')!.classList.add('hidden');
+    document.getElementById('nu-email-err')!.classList.add('hidden');
+    document.getElementById('nu-password-err')!.classList.add('hidden');
+    document.getElementById('nu-general-err')!.classList.add('hidden');
+    newUserModal.classList.remove('hidden');
+  });
+  document.getElementById('new-user-modal-close')!.addEventListener('click', () => {
+    newUserModal.classList.add('hidden');
+  });
+
+  newUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nombre   = (document.getElementById('nu-nombre')   as HTMLInputElement).value.trim();
+    const email    = (document.getElementById('nu-email')    as HTMLInputElement).value.trim().toLowerCase();
+    const password = (document.getElementById('nu-password') as HTMLInputElement).value;
+    const rol      = (document.getElementById('nu-rol')      as HTMLSelectElement).value as 'admin' | 'lectura';
+
+    // Validación local
+    let ok = true;
+    if (nombre.length < 2) {
+      const el = document.getElementById('nu-nombre-err')!;
+      el.textContent = 'El nombre debe tener al menos 2 caracteres.';
+      el.classList.remove('hidden');
+      ok = false;
+    } else { document.getElementById('nu-nombre-err')!.classList.add('hidden'); }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const el = document.getElementById('nu-email-err')!;
+      el.textContent = 'Ingresa un correo electrónico válido.';
+      el.classList.remove('hidden');
+      ok = false;
+    } else { document.getElementById('nu-email-err')!.classList.add('hidden'); }
+
+    if (password.length < 6) {
+      const el = document.getElementById('nu-password-err')!;
+      el.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+      el.classList.remove('hidden');
+      ok = false;
+    } else { document.getElementById('nu-password-err')!.classList.add('hidden'); }
+
+    if (!ok) return;
+
+    if (!isSupabaseConfigured) {
+      const el = document.getElementById('nu-general-err')!;
+      el.textContent = 'Se requiere Supabase para crear usuarios.';
+      el.classList.remove('hidden');
+      return;
+    }
+
+    nuSubmitBtn.disabled = true;
+    nuSubmitBtn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> Creando...';
+
+    // Generar token UUID v4 compatible
+    const token = crypto.randomUUID();
+    const expira = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    const passwordHash = await hashPassword(password);
+
+    const { error } = await createAdminUser({
+      nombre,
+      email,
+      rol,
+      verificado: false,
+      token_verificacion: token,
+      token_expira_at:    expira,
+      invitado_por:       'admin',
+      password_hash:      passwordHash,
+    } as any);
+
+    nuSubmitBtn.disabled = false;
+    nuSubmitBtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Enviar invitación';
+
+    if (error) {
+      const el = document.getElementById('nu-general-err')!;
+      el.textContent = error.includes('unique') || error.includes('duplicate')
+        ? 'Ya existe un usuario con ese correo electrónico.'
+        : 'Error al crear usuario: ' + error;
+      el.classList.remove('hidden');
+      return;
+    }
+
+    // Intentar enviar email automáticamente
+    newUserModal.classList.add('hidden');
+    const verifyLink = `${window.location.origin}/verificar?t=${token}`;
+
+    const { ok: emailSent, error: emailError } = await sendInvitationEmail(nombre, email, verifyLink);
+
+    const vlDesc = document.getElementById('vl-desc')!;
+    const vlLink = document.getElementById('vl-link') as HTMLInputElement;
+    vlLink.value = verifyLink;
+
+    if (emailSent) {
+      vlDesc.innerHTML = `✅ Email enviado automáticamente a <strong>${email}</strong>.
+        El usuario recibirá el enlace en su bandeja de entrada. Expira en 24 h.<br>
+        <span class="text-xs text-gray-400 mt-1 block">Copia el enlace como respaldo por si el correo va a spam.</span>`;
+    } else {
+      vlDesc.innerHTML = `Envíale este enlace a <strong>${nombre}</strong> (${email}) manualmente. Expira en 24 h.
+        ${emailError ? `<br><span class="text-xs text-amber-600 mt-1 block">⚠ Email automático no disponible: ${emailError}. Configura EmailJS en .env para activarlo.</span>` : ''}`;
+    }
+
+    document.getElementById('verify-link-modal')!.classList.remove('hidden');
+    loadUsers();
+  });
+
+  // ── Modal de enlace de verificación ──────────────────────────
+  document.getElementById('vl-copy-btn')!.addEventListener('click', () => {
+    const link = (document.getElementById('vl-link') as HTMLInputElement).value;
+    navigator.clipboard.writeText(link).then(() => showToast('Enlace copiado al portapapeles'));
+  });
+  document.getElementById('vl-close-btn')!.addEventListener('click', () => {
+    document.getElementById('verify-link-modal')!.classList.add('hidden');
+  });
 </script>

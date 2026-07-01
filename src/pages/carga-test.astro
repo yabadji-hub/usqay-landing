@@ -1,0 +1,395 @@
+---
+import { SITE } from '@/data/site';
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prueba de carga — {SITE.name}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <meta name="robots" content="noindex, nofollow" />
+</head>
+<body class="bg-gray-950 min-h-screen text-white p-6" style="font-family:'DM Sans',sans-serif;">
+
+  <div class="max-w-4xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-black text-white">Prueba de carga analítica</h1>
+        <p class="text-gray-400 text-sm mt-1">Simula registros masivos y valida la precisión de los KPIs comerciales.</p>
+      </div>
+      <a href="/admin" class="text-xs text-gray-500 hover:text-white transition-colors">← Volver al panel</a>
+    </div>
+
+    <!-- Config -->
+    <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6">
+      <h2 class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-4">Configuración de la prueba</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-xs text-gray-500 mb-1.5">Leads a insertar</label>
+          <input id="cfg-leads" type="number" value="50" min="1" max="500"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500" />
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1.5">Visitas a insertar</label>
+          <input id="cfg-visits" type="number" value="100" min="1" max="1000"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500" />
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1.5">Interacciones</label>
+          <input id="cfg-interactions" type="number" value="80" min="1" max="500"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500" />
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1.5">% Convertidos</label>
+          <input id="cfg-conv" type="number" value="20" min="0" max="100"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500" />
+        </div>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button id="run-btn"
+          class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition-all active:scale-95 text-sm">
+          ▶ Ejecutar prueba de carga
+        </button>
+        <button id="clean-btn"
+          class="px-5 bg-red-900/60 hover:bg-red-900 text-red-400 font-semibold py-3 rounded-xl transition-all text-sm border border-red-800">
+          🗑 Limpiar datos de prueba
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div id="progress-wrap" class="hidden bg-gray-900 rounded-2xl border border-gray-800 p-6">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-sm font-bold text-gray-300">Progreso</p>
+        <span id="progress-pct" class="text-xs font-mono text-orange-400">0%</span>
+      </div>
+      <div class="w-full bg-gray-800 rounded-full h-2 mb-4">
+        <div id="progress-bar" class="bg-orange-500 h-2 rounded-full transition-all duration-300" style="width:0%"></div>
+      </div>
+      <div id="progress-log" class="space-y-1 max-h-40 overflow-y-auto font-mono text-xs text-gray-500"></div>
+    </div>
+
+    <!-- Resultados -->
+    <div id="results-wrap" class="hidden space-y-4">
+
+      <!-- KPIs esperados vs reales -->
+      <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6">
+        <h2 class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-4">Validación de KPIs</h2>
+        <div id="kpi-table" class="space-y-2"></div>
+      </div>
+
+      <!-- Resumen de la prueba -->
+      <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6">
+        <h2 class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-4">Resumen de inserción</h2>
+        <div id="summary-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4"></div>
+      </div>
+
+      <!-- Distribución por tipo de negocio -->
+      <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6">
+        <h2 class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-4">Distribución por tipo de negocio</h2>
+        <div id="dist-chart" class="space-y-2"></div>
+      </div>
+
+      <!-- Distribución por estado -->
+      <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6">
+        <h2 class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-4">Distribución por estado de lead</h2>
+        <div id="estado-chart" class="space-y-2"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
+
+<style>
+  body { background: #030712; }
+</style>
+
+<script>
+  // ── Verificar sesión y rol antes de cargar nada ────────────────
+  const SESSION_KEY = 'usqay_admin_session';
+  const ROLE_KEY    = 'usqay_admin_role';
+
+  if (sessionStorage.getItem(SESSION_KEY) !== '1') {
+    window.location.replace('/admin');
+    throw new Error('redirect');
+  }
+  if (sessionStorage.getItem(ROLE_KEY) !== 'admin') {
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:DM Sans,sans-serif;background:#030712;">
+        <div style="text-align:center;max-width:320px;padding:2rem;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🔒</div>
+          <h1 style="color:#fff;font-size:1.25rem;font-weight:800;margin-bottom:.5rem;">Acceso restringido</h1>
+          <p style="color:#6b7280;font-size:.875rem;margin-bottom:1.5rem;">Esta herramienta solo está disponible para el rol <strong style="color:#E85C1A">Administrador</strong>.</p>
+          <a href="/admin" style="display:inline-block;background:#E85C1A;color:#fff;font-weight:700;padding:.75rem 1.5rem;border-radius:.75rem;text-decoration:none;font-size:.875rem;">Volver al panel →</a>
+        </div>
+      </div>`;
+    throw new Error('unauthorized');
+  }
+
+  import {
+    supabase, isSupabaseConfigured,
+    insertVisit, insertSubmission, insertInteraction, convertLeadToClient,
+    fetchSubmissions, fetchVisits,
+  } from '@/lib/supabase';
+
+  // ── Generadores de datos falsos ─────────────────────────────────
+  const NOMBRES   = ['Carlos Mendoza','Ana Torres','Luis García','María Quispe','José Rodríguez',
+    'Carmen Flores','Roberto Silva','Patricia Vega','Miguel Herrera','Sofía Castro',
+    'Diego Ramírez','Laura Núñez','Andrés Paredes','Valentina Cruz','Fernando Díaz'];
+  const TIPOS     = ['restaurante','polleria','cevicheria','chifa','fuente-de-soda'];
+  const ESTADOS   = ['Nuevo','Contactado','En seguimiento','Cerrado'];
+  const TIPOS_INT = ['llamada','whatsapp','email','reunion','nota'];
+  const RESULTADOS= ['exitoso','sin_respuesta','rechazado','reprogramar'];
+  const PLANES    = ['Básico','Profesional','Enterprise'];
+  const DEVICES   = ['Móvil','Escritorio','Tablet'];
+  const BROWSERS  = ['Chrome','Firefox','Safari','Edge'];
+  const COUNTRIES = ['PE','CO','MX','AR','CL'];
+  const CITIES    = ['Lima','Bogotá','Ciudad de México','Buenos Aires','Santiago'];
+  const MENSAJES  = ['Quiero información','Necesito el sistema urgente','¿Tienen prueba gratis?',
+    'Tengo 3 locales','Solo consulto precios','Me interesa el plan anual'];
+
+  const rand = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
+  const randInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const randEmail = (nombre: string, i: number) =>
+    `${nombre.split(' ')[0].toLowerCase()}.test${i}@prueba-usqay.com`;
+  const randPhone = () => `+51${randInt(900000000, 999999999)}`;
+  const randDate  = (daysBack: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() - randInt(0, daysBack));
+    d.setHours(randInt(8, 22), randInt(0, 59));
+    return d.toISOString();
+  };
+
+  // ── Helpers UI ──────────────────────────────────────────────────
+  let logEl: HTMLElement;
+  let barEl: HTMLElement;
+  let pctEl: HTMLElement;
+
+  function log(msg: string, type: 'info'|'ok'|'warn'|'err' = 'info') {
+    const colors = { info:'text-gray-500', ok:'text-green-400', warn:'text-yellow-400', err:'text-red-400' };
+    const p = document.createElement('p');
+    p.className = colors[type];
+    p.textContent = `[${new Date().toLocaleTimeString('es-PE')}] ${msg}`;
+    logEl.appendChild(p);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function setProgress(pct: number) {
+    barEl.style.width = `${pct}%`;
+    pctEl.textContent = `${Math.round(pct)}%`;
+  }
+
+  function statCard(label: string, value: string|number, color = 'text-orange-400') {
+    return `<div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+      <p class="text-2xl font-black ${color}">${value}</p>
+      <p class="text-xs text-gray-500 mt-1">${label}</p>
+    </div>`;
+  }
+
+  function kpiRow(label: string, esperado: number, real: number) {
+    const ok    = real === esperado;
+    const diff  = real - esperado;
+    const icon  = ok ? '✅' : Math.abs(diff) <= esperado * 0.05 ? '⚠️' : '❌';
+    const color = ok ? 'text-green-400' : Math.abs(diff) <= esperado * 0.05 ? 'text-yellow-400' : 'text-red-400';
+    return `
+    <div class="flex items-center gap-4 py-3 border-b border-gray-800 last:border-0">
+      <span class="text-base w-6 flex-shrink-0">${icon}</span>
+      <span class="flex-1 text-sm text-gray-300">${label}</span>
+      <span class="text-sm font-mono text-gray-500">esperado: <strong class="text-white">${esperado}</strong></span>
+      <span class="text-sm font-mono ${color}">real: <strong>${real}</strong></span>
+      ${!ok ? `<span class="text-xs ${color}">(${diff > 0 ? '+' : ''}${diff})</span>` : ''}
+    </div>`;
+  }
+
+  function barChart(data: Record<string, number>, total: number, colors: string[]) {
+    return Object.entries(data).sort((a,b)=>b[1]-a[1]).map(([label, n], i) => {
+      const pct = total > 0 ? (n / total * 100).toFixed(1) : '0';
+      return `
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-gray-400 w-28 flex-shrink-0 truncate capitalize">${label}</span>
+        <div class="flex-1 bg-gray-800 rounded-full h-2">
+          <div class="h-2 rounded-full transition-all" style="width:${pct}%;background:${colors[i % colors.length]}"></div>
+        </div>
+        <span class="text-xs font-mono text-gray-400 w-16 text-right">${n} (${pct}%)</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Inserción en lotes ──────────────────────────────────────────
+  const BATCH = 10;
+  const TEST_TAG = 'prueba-usqay.com'; // tag para identificar registros de prueba
+
+  async function insertBatch<T>(items: T[], fn: (item: T) => Promise<any>, label: string, offset: number, total: number) {
+    for (let i = 0; i < items.length; i += BATCH) {
+      const batch = items.slice(i, i + BATCH);
+      await Promise.all(batch.map(fn));
+      setProgress(((offset + i + batch.length) / total) * 100);
+    }
+    log(`  → ${items.length} ${label} insertados`, 'ok');
+  }
+
+  // ── Runner principal ────────────────────────────────────────────
+  async function runTest() {
+    if (!isSupabaseConfigured || !supabase) {
+      alert('Supabase no está configurado. Esta prueba requiere la base de datos activa.');
+      return;
+    }
+
+    const nLeads      = Number((document.getElementById('cfg-leads')        as HTMLInputElement).value);
+    const nVisits     = Number((document.getElementById('cfg-visits')       as HTMLInputElement).value);
+    const nInt        = Number((document.getElementById('cfg-interactions')  as HTMLInputElement).value);
+    const pctConv     = Number((document.getElementById('cfg-conv')         as HTMLInputElement).value) / 100;
+    const nConv       = Math.round(nLeads * pctConv);
+    const totalOps    = nLeads + nVisits + nInt + nConv;
+
+    document.getElementById('progress-wrap')!.classList.remove('hidden');
+    document.getElementById('results-wrap')!.classList.add('hidden');
+    logEl = document.getElementById('progress-log')!;
+    barEl = document.getElementById('progress-bar')!;
+    pctEl = document.getElementById('progress-pct')!;
+    logEl.innerHTML = '';
+    setProgress(0);
+
+    // Contadores para validación
+    const distTipo:   Record<string, number> = {};
+    const distEstado: Record<string, number> = {};
+    const emails:     string[] = [];
+
+    // ── 1. Generar y insertar leads ────────────────────────────
+    log(`Generando ${nLeads} leads de prueba...`);
+    const leads = Array.from({ length: nLeads }, (_, i) => {
+      const nombre = rand(NOMBRES);
+      const tipo   = rand(TIPOS);
+      const estado = i < nConv ? 'Convertido' : rand(ESTADOS);
+      const email  = randEmail(nombre, i);
+      distTipo[tipo]     = (distTipo[tipo]   ?? 0) + 1;
+      distEstado[estado] = (distEstado[estado] ?? 0) + 1;
+      emails.push(email);
+      return { nombre, telefono: randPhone(), email, tipo_negocio: tipo,
+               mensaje: rand(MENSAJES), estado, created_at: randDate(30) };
+    });
+
+    await insertBatch(leads, (l) => insertSubmission(l as any), 'leads', 0, totalOps);
+
+    // ── 2. Insertar visitas ────────────────────────────────────
+    log(`Generando ${nVisits} visitas de prueba...`);
+    const visits = Array.from({ length: nVisits }, (_, i) => ({
+      ip:      `10.${randInt(0,255)}.${randInt(0,255)}.${i % 255}`,
+      country: rand(COUNTRIES), city: rand(CITIES), region: 'Test',
+      isp:     'Test ISP', device: rand(DEVICES), browser: rand(BROWSERS),
+      page:    '/', created_at: randDate(30),
+    }));
+
+    await insertBatch(visits, (v) => insertVisit(v as any), 'visitas', nLeads, totalOps);
+
+    // ── 3. Insertar interacciones ──────────────────────────────
+    log(`Generando ${nInt} interacciones de prueba...`);
+    const interactions = Array.from({ length: nInt }, (_, i) => ({
+      submission_email: emails[i % emails.length],
+      tipo:             rand(TIPOS_INT),
+      resultado:        rand(RESULTADOS),
+      notas:            `Interacción de prueba #${i + 1}`,
+      fecha_interaccion: randDate(20),
+      creado_por:       'test-script',
+    }));
+
+    await insertBatch(interactions, (it) => insertInteraction(it as any), 'interacciones', nLeads + nVisits, totalOps);
+
+    // ── 4. Convertir leads ─────────────────────────────────────
+    log(`Convirtiendo ${nConv} leads a clientes...`);
+    const converts = leads.slice(0, nConv).map((l, i) => ({
+      nombre: l.nombre, email: l.email, telefono: l.telefono,
+      tipo_negocio: l.tipo_negocio, plan_contratado: rand(PLANES),
+      fecha_conversion: new Date().toISOString(),
+      notas_conversion: `Conversión automática prueba de carga #${i + 1}`,
+    }));
+
+    await insertBatch(converts, (c) => convertLeadToClient(c as any), 'conversiones', nLeads + nVisits + nInt, totalOps);
+
+    setProgress(100);
+    log('✓ Inserción completada. Validando KPIs...', 'ok');
+
+    // ── 5. Validar KPIs ────────────────────────────────────────
+    await validateKPIs({ nLeads, nVisits, nInt, nConv, distTipo, distEstado });
+  }
+
+  async function validateKPIs({ nLeads, nVisits, nInt, nConv, distTipo, distEstado }: any) {
+    log('Consultando datos reales desde Supabase...');
+
+    const [realLeads, realVisits] = await Promise.all([
+      fetchSubmissions(),
+      fetchVisits(5000),
+    ]);
+
+    // Filtrar solo los de prueba (email contiene TEST_TAG)
+    const testLeads  = realLeads.filter(l => l.email?.includes(TEST_TAG));
+    const uniqueIPs  = new Set(realVisits.map(v => v.ip)).size;
+    const testConv   = testLeads.filter(l => l.estado === 'Convertido').length;
+
+    const convRate   = realVisits.length > 0
+      ? ((realLeads.length / uniqueIPs) * 100).toFixed(1)
+      : '0.0';
+
+    // Distribución real de tipos (solo test leads)
+    const realDist: Record<string, number> = {};
+    testLeads.forEach(l => { realDist[l.tipo_negocio ?? '—'] = (realDist[l.tipo_negocio ?? '—'] ?? 0) + 1; });
+
+    const realEstado: Record<string, number> = {};
+    testLeads.forEach(l => { realEstado[l.estado ?? '—'] = (realEstado[l.estado ?? '—'] ?? 0) + 1; });
+
+    // Renderizar resultados
+    const kpiTable = document.getElementById('kpi-table')!;
+    kpiTable.innerHTML = [
+      kpiRow('Leads de prueba insertados',   nLeads,      testLeads.length),
+      kpiRow('Leads convertidos (prueba)',    nConv,       testConv),
+    ].join('');
+
+    const summaryGrid = document.getElementById('summary-grid')!;
+    summaryGrid.innerHTML = [
+      statCard('Leads de prueba',  testLeads.length,  'text-orange-400'),
+      statCard('Leads convertidos',testConv,           'text-green-400'),
+      statCard('Visitas totales DB',realVisits.length, 'text-blue-400'),
+      statCard('IPs únicas',       uniqueIPs,          'text-purple-400'),
+      statCard('Tasa de conv.',    convRate + '%',     'text-yellow-400'),
+      statCard('Total leads DB',   realLeads.length,   'text-gray-300'),
+    ].join('');
+
+    const COLORS = ['#E85C1A','#1B3D6E','#16a34a','#7c3aed','#0891b2','#be185d'];
+    document.getElementById('dist-chart')!.innerHTML   = barChart(realDist,   testLeads.length, COLORS);
+    document.getElementById('estado-chart')!.innerHTML = barChart(realEstado, testLeads.length, COLORS);
+
+    document.getElementById('results-wrap')!.classList.remove('hidden');
+    log('✓ Validación completada', 'ok');
+  }
+
+  // ── Limpiar datos de prueba ─────────────────────────────────────
+  async function cleanTestData() {
+    if (!isSupabaseConfigured || !supabase) { alert('Supabase no configurado.'); return; }
+    if (!confirm('¿Eliminar todos los registros de prueba (emails con @prueba-usqay.com)?')) return;
+
+    const btn = document.getElementById('clean-btn') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Limpiando...';
+
+    await Promise.all([
+      supabase.from('submissions').delete().like('email', `%${TEST_TAG}%`),
+      supabase.from('clients').delete().like('email', `%${TEST_TAG}%`),
+      supabase.from('interactions').delete().like('submission_email', `%${TEST_TAG}%`),
+      supabase.from('visits').delete().eq('isp', 'Test ISP'),
+    ]);
+
+    btn.disabled = false;
+    btn.textContent = '🗑 Limpiar datos de prueba';
+    alert('Datos de prueba eliminados correctamente.');
+  }
+
+  document.getElementById('run-btn')!.addEventListener('click', runTest);
+  document.getElementById('clean-btn')!.addEventListener('click', cleanTestData);
+</script>

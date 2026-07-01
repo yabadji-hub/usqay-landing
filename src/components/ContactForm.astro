@@ -8,7 +8,7 @@ const FORMSPREE_ID = 'xykolkrw';
       <span class="inline-block text-usqay-orange text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full bg-white border border-usqay-orange/20">
         Contacto
       </span>
-      <h2 class="text-2xl sm:text-4xl font-black text-usqay-navy mt-2 mb-2 sm:mb-3" style="font-family: 'Playfair Display', serif;">
+      <h2 class="text-2xl sm:text-4xl font-black text-usqay-navy mt-2 mb-2 sm:mb-3">
         Solicita tu demo gratuita
       </h2>
       <p class="text-usqay-muted text-sm leading-relaxed max-w-sm mx-auto">
@@ -118,7 +118,7 @@ const FORMSPREE_ID = 'xykolkrw';
       <!-- Éxito -->
       <div id="success-msg" class="hidden text-center py-10">
         <div class="text-6xl mb-4">✅</div>
-        <h3 class="text-xl font-black text-usqay-navy mb-2" style="font-family: 'Playfair Display', serif;">¡Solicitud recibida!</h3>
+        <h3 class="text-xl font-black text-usqay-navy mb-2">¡Solicitud recibida!</h3>
         <p class="text-usqay-muted text-sm">Un asesor te contactará en menos de 24 horas por WhatsApp o correo.</p>
       </div>
     </div>
@@ -146,7 +146,7 @@ const FORMSPREE_ID = 'xykolkrw';
 </style>
 
 <script>
-  import { insertSubmission, isSupabaseConfigured } from '@/lib/supabase';
+  import { insertSubmission, insertFailure, isSupabaseConfigured } from '@/lib/supabase';
 
   // ── Mostrar el formulario solo cuando piden la demo ───────────
   const contactSection = document.getElementById('contacto') as HTMLElement;
@@ -285,26 +285,46 @@ const FORMSPREE_ID = 'xykolkrw';
     submitBtn.disabled = true;
     submitBtn.textContent = 'Enviando...';
 
+    // Captura los datos del form para usarlos en el registro de fallos
+    const formData = new FormData(form);
+    const nombre       = String(formData.get('nombre')       ?? '');
+    const telefono     = String(formData.get('telefono')     ?? '');
+    const email        = String(formData.get('email')        ?? '');
+    const tipo_negocio = String(formData.get('tipo_negocio') ?? '');
+    const mensaje      = String(formData.get('mensaje')      ?? '');
+
+    const failureMeta = {
+      nombre,
+      email,
+      telefono,
+      tipo_negocio,
+      user_agent:  navigator.userAgent.slice(0, 300),
+      url_origen:  window.location.href,
+      fecha:       new Date().toISOString(),
+    };
+
     try {
       const res = await fetch(form.action, {
         method: 'POST',
-        body: new FormData(form),
+        body: formData,
         headers: { Accept: 'application/json' },
       });
+
       if (res.ok) {
-        const data = new FormData(form);
-        const submission = {
-          nombre:       String(data.get('nombre')      ?? ''),
-          telefono:     String(data.get('telefono')     ?? ''),
-          email:        String(data.get('email')        ?? ''),
-          tipo_negocio: String(data.get('tipo_negocio') ?? ''),
-          mensaje:      String(data.get('mensaje')      ?? ''),
-          estado:       'Nuevo',
-        };
+        const submission = { nombre, telefono, email, tipo_negocio, mensaje, estado: 'Nuevo' };
 
         // ── Supabase (si está configurado) ──────────────────
         if (isSupabaseConfigured) {
-          await insertSubmission(submission);
+          try {
+            await insertSubmission(submission);
+          } catch (err: any) {
+            // Fallo al guardar en Supabase — registrar incidencia pero no bloquear al usuario
+            await insertFailure({
+              ...failureMeta,
+              tipo_error: 'supabase',
+              detalle:    err?.message ?? 'Error desconocido al insertar en Supabase',
+            });
+          }
         }
 
         // ── localStorage (fallback/caché siempre activo) ────
@@ -312,14 +332,43 @@ const FORMSPREE_ID = 'xykolkrw';
         subs.push({ ...submission, fecha: new Date().toISOString() });
         localStorage.setItem('usqay_submissions', JSON.stringify(subs));
 
+        // ── Notificar al panel admin (misma sesión de navegador) ──
+        localStorage.setItem('usqay_last_lead_ts', Date.now().toString());
+        try {
+          const bc = new BroadcastChannel('usqay_leads');
+          bc.postMessage({ type: 'new_lead', nombre: submission.nombre, tipo: submission.tipo_negocio });
+          bc.close();
+        } catch { /* BroadcastChannel no disponible */ }
+
         form.classList.add('hidden');
         successMsg.classList.remove('hidden');
       } else {
+        // Fallo de servidor (Formspree u otro proveedor devolvió error HTTP)
+        let detalle = `HTTP ${res.status} ${res.statusText}`;
+        try {
+          const body = await res.json();
+          if (body?.error) detalle += ` — ${body.error}`;
+        } catch { /* sin body JSON */ }
+
+        await insertFailure({
+          ...failureMeta,
+          tipo_error:  'servidor',
+          detalle,
+          status_code: res.status,
+        });
+
         submitBtn.disabled = false;
         submitBtn.textContent = 'Solicitar demo gratuita →';
         alert('Error al enviar. Por favor intenta de nuevo.');
       }
-    } catch {
+    } catch (err: any) {
+      // Fallo de red (sin conexión, timeout, CORS, etc.)
+      await insertFailure({
+        ...failureMeta,
+        tipo_error: 'red',
+        detalle:    err?.message ?? 'Error de conexión desconocido',
+      });
+
       submitBtn.disabled = false;
       submitBtn.textContent = 'Solicitar demo gratuita →';
       alert('Error de conexión. Por favor intenta de nuevo.');

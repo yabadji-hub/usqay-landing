@@ -18,7 +18,7 @@ const plansJSON = JSON.stringify(PLANS);
               'transition-all duration-300 ease-out',
               plan.featured
                 ? 'shadow-2xl shadow-orange-200 sm:scale-[1.03] sm:hover:scale-[1.05]'
-                : 'bg-white border border-usqay-border shadow-sm hover:shadow-xl hover:-translate-y-1',
+                : 'bg-usqay-navy border border-usqay-navy shadow-md hover:shadow-xl hover:-translate-y-1',
             ].join(' ')}
             style={`--delay: ${i * 100}ms`}
           >
@@ -28,25 +28,25 @@ const plansJSON = JSON.stringify(PLANS);
               </div>
             )}
 
-            <div class={['px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6 rounded-t-2xl', plan.featured ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white' : 'bg-white'].join(' ')}>
-              <h3 class={['text-base sm:text-xl font-black mb-1', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')} style="font-family: 'Playfair Display', serif;">
+            <div class={['px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6 rounded-t-2xl', plan.featured ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white' : 'bg-usqay-navy'].join(' ')}>
+              <h3 class={['text-base sm:text-xl font-black mb-1', plan.featured ? 'text-white' : 'text-white'].join(' ')} >
                 {plan.name}
               </h3>
-              <p class={['text-xs leading-relaxed mb-3 sm:mb-5 line-clamp-4 sm:line-clamp-none min-h-[4.9rem] sm:min-h-0', plan.featured ? 'text-orange-100' : 'text-usqay-muted'].join(' ')}>
+              <p class={['text-xs leading-relaxed mb-3 sm:mb-5 line-clamp-4 sm:line-clamp-none min-h-[4.9rem] sm:min-h-0', plan.featured ? 'text-orange-100' : 'text-blue-200'].join(' ')}>
                 {plan.description}
               </p>
               <div class="mb-1">
                 <div class="flex items-baseline gap-0.5">
-                  <span class={['plan-original text-sm line-through mr-1', plan.featured ? 'text-orange-200' : 'text-usqay-subtle'].join(' ')}
+                  <span class={['plan-original text-sm line-through mr-1', plan.featured ? 'text-orange-200' : 'text-blue-300'].join(' ')}
                     data-monthly={plan.priceMonthly} data-annual={plan.priceAnnual} style="display:none">
                     S/{plan.priceMonthly}
                   </span>
-                  <span class={['text-base font-semibold', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')}>S/</span>
-                  <span class={['plan-price text-3xl sm:text-5xl font-black leading-none', plan.featured ? 'text-white' : 'text-usqay-navy'].join(' ')}
+                  <span class={['text-base font-semibold', plan.featured ? 'text-white' : 'text-white'].join(' ')}>S/</span>
+                  <span class={['plan-price text-3xl sm:text-5xl font-black leading-none', plan.featured ? 'text-white' : 'text-white'].join(' ')}
                     data-monthly={plan.priceMonthly} data-annual={plan.priceAnnual}>
                     {plan.priceMonthly}
                   </span>
-                  <span class={['text-sm ml-1', plan.featured ? 'text-orange-100' : 'text-usqay-muted'].join(' ')}>/mes</span>
+                  <span class={['text-sm ml-1', plan.featured ? 'text-orange-100' : 'text-blue-200'].join(' ')}>/mes</span>
                 </div>
                 {plan.annualSavingsLabel && (
                   <div class="plan-savings mt-2.5" style="display:none">
@@ -66,7 +66,7 @@ const plansJSON = JSON.stringify(PLANS);
               </div>
             </div>
 
-            <div class={['px-4 py-3 sm:px-6 sm:py-4', plan.featured ? 'bg-usqay-orange-dark' : 'bg-white'].join(' ')}>
+            <div class={['px-4 py-3 sm:px-6 sm:py-4', plan.featured ? 'bg-usqay-orange-dark' : 'bg-usqay-navy'].join(' ')}>
               <a href={plan.ctaHref}
                 class={['block w-full text-center py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95',
                   plan.featured
@@ -77,15 +77,15 @@ const plansJSON = JSON.stringify(PLANS);
               </a>
             </div>
 
-            <div class="bg-white flex-1 px-4 pt-4 pb-5 sm:px-6 sm:pt-5 sm:pb-6 rounded-b-2xl">
-              <p class="text-[10px] uppercase tracking-widest text-usqay-subtle font-bold mb-3 sm:mb-4">Incluye</p>
+            <div class={['flex-1 px-4 pt-4 pb-5 sm:px-6 sm:pt-5 sm:pb-6 rounded-b-2xl', plan.featured ? 'bg-white' : 'bg-usqay-navy'].join(' ')}>
+              <p class={['text-[10px] uppercase tracking-widest font-bold mb-3 sm:mb-4', plan.featured ? 'text-usqay-subtle' : 'text-blue-300'].join(' ')}>Incluye</p>
               <ul class="space-y-1.5 sm:space-y-2.5">
                 {plan.features.map((f) => (
                   <li class="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm leading-snug">
-                    <span class={['flex-shrink-0 mt-0.5 text-sm sm:text-base leading-none', f.included ? 'text-usqay-green' : 'text-usqay-subtle'].join(' ')}>
+                    <span class={['flex-shrink-0 mt-0.5 text-sm sm:text-base leading-none', f.included ? (plan.featured ? 'text-usqay-green' : 'text-green-400') : (plan.featured ? 'text-usqay-subtle' : 'text-blue-400/50')].join(' ')}>
                       {f.included ? '✓' : '✗'}
                     </span>
-                    <span class={f.included ? 'text-usqay-text font-medium' : 'text-usqay-subtle line-through'}>
+                    <span class={f.included ? (plan.featured ? 'text-usqay-text font-medium' : 'text-white font-medium') : (plan.featured ? 'text-usqay-subtle line-through' : 'text-blue-300/50 line-through')}>
                       {f.label}
                     </span>
                   </li>
@@ -130,15 +130,15 @@ const plansJSON = JSON.stringify(PLANS);
       'pricing-card relative rounded-2xl flex flex-col',
       'transition-all duration-300 ease-out',
       f ? 'shadow-2xl shadow-orange-200 sm:scale-[1.03] sm:hover:scale-[1.05]'
-        : 'bg-white border border-usqay-border shadow-sm hover:shadow-xl hover:-translate-y-1',
+        : 'bg-usqay-navy border border-usqay-navy shadow-md hover:shadow-xl hover:-translate-y-1',
     ].join(' ');
 
     const hasSavings = Boolean(plan.annualSavingsLabel) && plan.priceMonthly !== plan.priceAnnual;
 
     const featuresHTML = plan.features.map(feat => `
       <li class="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm leading-snug">
-        <span class="flex-shrink-0 mt-0.5 text-sm sm:text-base leading-none ${feat.included ? 'text-usqay-green' : 'text-usqay-subtle'}">${feat.included ? '✓' : '✗'}</span>
-        <span class="${feat.included ? 'text-usqay-text font-medium' : 'text-usqay-subtle line-through'}">${feat.label}</span>
+        <span class="flex-shrink-0 mt-0.5 text-sm sm:text-base leading-none ${feat.included ? (f ? 'text-usqay-green' : 'text-green-400') : (f ? 'text-usqay-subtle' : 'text-blue-400/50')}">${feat.included ? '✓' : '✗'}</span>
+        <span class="${feat.included ? (f ? 'text-usqay-text font-medium' : 'text-white font-medium') : (f ? 'text-usqay-subtle line-through' : 'text-blue-300/50 line-through')}">${feat.label}</span>
       </li>`).join('');
 
     return `
@@ -148,17 +148,17 @@ const plansJSON = JSON.stringify(PLANS);
             ${plan.featuredLabel}
           </div>` : ''}
 
-        <div class="px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6 rounded-t-2xl ${f ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white' : 'bg-white'}">
-          <h3 class="text-base sm:text-xl font-black mb-1 ${f ? 'text-white' : 'text-usqay-navy'}" style="font-family:'Playfair Display',serif;">${plan.name}</h3>
-          <p class="text-xs leading-relaxed mb-3 sm:mb-5 line-clamp-4 sm:line-clamp-none min-h-[4.9rem] sm:min-h-0 ${f ? 'text-orange-100' : 'text-usqay-muted'}">${plan.description}</p>
+        <div class="px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6 rounded-t-2xl ${f ? 'bg-gradient-to-br from-usqay-orange to-usqay-orange-dark text-white' : 'bg-usqay-navy'}">
+          <h3 class="text-base sm:text-xl font-black mb-1 text-white" >${plan.name}</h3>
+          <p class="text-xs leading-relaxed mb-3 sm:mb-5 line-clamp-4 sm:line-clamp-none min-h-[4.9rem] sm:min-h-0 ${f ? 'text-orange-100' : 'text-blue-200'}">${plan.description}</p>
           <div class="mb-1">
             <div class="flex items-baseline gap-0.5">
-              <span class="plan-original text-sm line-through mr-1 ${f ? 'text-orange-200' : 'text-usqay-subtle'}"
+              <span class="plan-original text-sm line-through mr-1 ${f ? 'text-orange-200' : 'text-blue-300'}"
                 data-monthly="${plan.priceMonthly}" data-annual="${plan.priceAnnual}" style="display:none">S/${plan.priceMonthly}</span>
-              <span class="text-base font-semibold ${f ? 'text-white' : 'text-usqay-navy'}">S/</span>
-              <span class="plan-price text-3xl sm:text-5xl font-black leading-none ${f ? 'text-white' : 'text-usqay-navy'}"
+              <span class="text-base font-semibold text-white">S/</span>
+              <span class="plan-price text-3xl sm:text-5xl font-black leading-none text-white"
                 data-monthly="${plan.priceMonthly}" data-annual="${plan.priceAnnual}">${plan.priceMonthly}</span>
-              <span class="text-sm ml-1 ${f ? 'text-orange-100' : 'text-usqay-muted'}">/mes</span>
+              <span class="text-sm ml-1 ${f ? 'text-orange-100' : 'text-blue-200'}">/mes</span>
             </div>
             ${hasSavings ? `
             <div class="plan-savings mt-2.5" style="display:none">
@@ -175,15 +175,15 @@ const plansJSON = JSON.stringify(PLANS);
           </div>
         </div>
 
-        <div class="px-4 py-3 sm:px-6 sm:py-4 ${f ? 'bg-usqay-orange-dark' : 'bg-white'}">
+        <div class="px-4 py-3 sm:px-6 sm:py-4 ${f ? 'bg-usqay-orange-dark' : 'bg-usqay-navy'}">
           <a href="${plan.ctaHref}" class="block w-full text-center py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 ${
             f ? 'bg-white text-usqay-orange hover:bg-orange-50 shadow-md'
               : 'bg-usqay-orange text-white hover:bg-usqay-orange-dark shadow-sm hover:shadow-orange-200 hover:shadow-md'
           }">${plan.ctaLabel}</a>
         </div>
 
-        <div class="bg-white flex-1 px-4 pt-4 pb-5 sm:px-6 sm:pt-5 sm:pb-6 rounded-b-2xl">
-          <p class="text-[10px] uppercase tracking-widest text-usqay-subtle font-bold mb-3 sm:mb-4">Incluye</p>
+        <div class="${f ? 'bg-white' : 'bg-usqay-navy'} flex-1 px-4 pt-4 pb-5 sm:px-6 sm:pt-5 sm:pb-6 rounded-b-2xl">
+          <p class="text-[10px] uppercase tracking-widest ${f ? 'text-usqay-subtle' : 'text-blue-300'} font-bold mb-3 sm:mb-4">Incluye</p>
           <ul class="space-y-1.5 sm:space-y-2.5">${featuresHTML}</ul>
         </div>
       </div>`;
